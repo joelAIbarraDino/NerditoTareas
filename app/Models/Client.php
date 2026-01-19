@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    //
+    
+
+    public function client(){
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function homework(){
+        return $this->hasMany(Homework::class, 'client');
+    }
 }
