@@ -23,6 +23,9 @@ export type AppPageProps<
     name: string;
     auth: Auth;
     sidebarOpen: boolean;
+    flash:{
+        message:string;
+    };
     [key: string]: unknown;
 };
 
@@ -30,6 +33,7 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    whatsapp:string;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Spatie\Permission\Middleware\RoleMiddleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,21 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            if ($request->is('two-factor-challenge') || $request->is('two-factor-challenge/*')) {
+                return null;
+            }
+
+            if ($request->user()?->hasRole('admin') )
+                return '/dashboard';
+            
+            if ($request->user()?->hasRole('specialist') )
+                return '/specialist';
+        
+            return '/client';
+
+        });
 
         $middleware->web(append: [
             HandleAppearance::class,

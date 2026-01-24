@@ -20,10 +20,10 @@ const inputEmail = ref(props.email);
 
 <template>
     <AuthLayout
-        title="Reset password"
-        description="Please enter your new password below"
+        title="Actualizar contraseña"
+        description="Ingresa tu contrase y confirma tu contraseña"
     >
-        <Head title="Reset password" />
+        <Head title="Actualizar contraseña" />
 
         <Form
             v-bind="update.form()"
@@ -47,7 +47,7 @@ const inputEmail = ref(props.email);
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password">Password</Label>
+                    <Label for="password">Contraseña</Label>
                     <Input
                         id="password"
                         type="password"
@@ -62,7 +62,7 @@ const inputEmail = ref(props.email);
 
                 <div class="grid gap-2">
                     <Label for="password_confirmation">
-                        Confirm Password
+                        Confirma contraseña
                     </Label>
                     <Input
                         id="password_confirmation"
@@ -82,7 +82,7 @@ const inputEmail = ref(props.email);
                     data-test="reset-password-button"
                 >
                     <Spinner v-if="processing" />
-                    Reset password
+                    Actualizar contraseña
                 </Button>
             </div>
         </Form>

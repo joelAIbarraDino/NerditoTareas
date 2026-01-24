@@ -25,6 +25,12 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+
+    {
+        title: 'Administradores',
+        href: '/admins',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
