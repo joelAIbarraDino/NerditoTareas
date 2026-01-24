@@ -50,26 +50,26 @@ const modalConfig = computed<{
 }>(() => {
     if (props.twoFactorEnabled) {
         return {
-            title: 'Two-Factor Authentication Enabled',
+            title: '2FA habilitado',
             description:
-                'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-            buttonText: 'Close',
+                '2FA esta ahora habilitado. Escanea el codigo QR o ingresa la llave de configuracón en tu aplicación de autenticación',
+            buttonText: 'Cerrar',
         };
     }
 
     if (showVerificationStep.value) {
         return {
-            title: 'Verify Authentication Code',
-            description: 'Enter the 6-digit code from your authenticator app',
-            buttonText: 'Continue',
+            title: 'Verificación de codigo de autenticación',
+            description: 'Ingresa el codigo de autenticación de 6 digitos de su aplicacón',
+            buttonText: 'Continuar',
         };
     }
 
     return {
-        title: 'Enable Two-Factor Authentication',
+        title: 'Habilitar el 2FA',
         description:
-            'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-        buttonText: 'Continue',
+            'Para finalizar la configuarción del 2FA. Escanea el codigo QR o ingresa la llave de configuración en la apliación de autenticación',
+        buttonText: 'Continuar',
     };
 });
 
@@ -200,7 +200,7 @@ watch(
                                 class="absolute inset-0 top-1/2 h-px w-full bg-border"
                             />
                             <span class="relative bg-card px-2 py-1"
-                                >or, enter the code manually</span
+                                >o, ingrese manualmente el codigo</span
                             >
                         </div>
 
@@ -271,8 +271,7 @@ watch(
                                 </InputOTP>
                                 <InputError
                                     :message="
-                                        errors?.confirmTwoFactorAuthentication
-                                            ?.code
+                                        errors?.confirmTwoFactorAuthentication?.code
                                     "
                                 />
                             </div>
@@ -292,7 +291,7 @@ watch(
                                     class="w-auto flex-1"
                                     :disabled="processing || code.length < 6"
                                 >
-                                    Confirm
+                                    Confirmar
                                 </Button>
                             </div>
                         </div>
