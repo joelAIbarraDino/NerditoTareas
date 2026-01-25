@@ -88,13 +88,13 @@ onUnmounted(() => {
                     v-else
                     class="flex flex-col items-start justify-start space-y-4"
                 >
-                    <Badge variant="default">Enabled</Badge>
+                    <Badge variant="default">Habilitado</Badge>
 
                     <p class="text-muted-foreground">
-                        With two-factor authentication enabled, you will be
-                        prompted for a secure, random pin during login, which
-                        you can retrieve from the TOTP-supported application on
-                        your phone.
+                        Con la autenticación de dos factores habilitada, 
+                        se te solicitará un PIN aleatorio y seguro al iniciar sesión, 
+                        que puedes recuperar desde la aplicación compatible 
+                        con TOTP en tu teléfono.
                     </p>
 
                     <TwoFactorRecoveryCodes />
@@ -107,7 +107,7 @@ onUnmounted(() => {
                                 :disabled="processing"
                             >
                                 <ShieldBan />
-                                Disable 2FA
+                                Deshabilitar 2FA
                             </Button>
                         </Form>
                     </div>
