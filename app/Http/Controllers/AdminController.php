@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 
@@ -64,7 +65,11 @@ class AdminController extends Controller
     {
         $request->validate([
             'name'=>'required|string',
-            'whatsapp'=>[ 'required', 'regex:/^[0-9]{10}$/' ],
+            'whatsapp'=>[
+                'required', 
+                'regex:/^[0-9]{10}$/',
+                Rule::unique('users')->ignore($admin->id),
+            ],
             'password'=>['nullable', 'confirmed', Password::default()]
         ]);
 

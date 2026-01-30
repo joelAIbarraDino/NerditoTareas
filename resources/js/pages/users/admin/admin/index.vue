@@ -10,7 +10,7 @@ import { computed } from 'vue';
 import Swal from 'sweetalert2';
 
 const breadcrumbs: BreadcrumbItem[] = [{title: 'Administradores',href: '#'}]
-const columnsName = ['Nombre', 'Correo', 'WhatsApp', 'Acciones'];
+const columnsName = ['Nombre', 'WhatsApp', 'Correo', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
     admins: User[]
@@ -55,7 +55,11 @@ const deleteAdmins = async(id:number)=>{
             <TableRecords caption="Lista de administradores" :columns-head="columnsName">
                 <TableRow v-for="admin in admins":for="admin.id">
                     <TableCell>{{ admin.name }}</TableCell>
-                    <TableCell><Link :href="`https://wa.me/52${admin.whatsapp}`">Numero de WhatsApp</Link> </TableCell>
+                    <TableCell>
+                        <Link :href="`https://wa.me/52${admin.whatsapp}`" class="hover:underline hover:text-green-600">
+                            Abrir WhatsApp
+                        </Link> 
+                    </TableCell>
                     <TableCell>{{ admin.email }}</TableCell>
 
                     <TableActions>

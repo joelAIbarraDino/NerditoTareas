@@ -12,7 +12,7 @@ import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {title:"Area de especialistas", href:"/specialist-area"},
-    {title:"Editar", href:"#"}
+    {title:"Actualizar", href:"#"}
 ];
 
 interface specialistAreaEditPageProps extends AppPageProps{

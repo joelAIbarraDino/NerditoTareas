@@ -7,6 +7,8 @@ use App\Models\SpecialistArea;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules\Password;
 
@@ -59,21 +61,15 @@ class SpecialistController extends Controller
         return redirect()->route('specialists.index');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Specialist $specialist)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Specialist $specialist)
     {
-        //
+        return Inertia::render('users/admin/specialist/update', [
+            'specialist'=>$specialist->with(['user', 'specialistArea'])->first(),
+            'specialistAreas' => SpecialistArea::all(),
+        ]);
     }
 
     /**
@@ -81,7 +77,40 @@ class SpecialistController extends Controller
      */
     public function update(Request $request, Specialist $specialist)
     {
-        //
+        $request->validate([
+            'name'=>'required|string',
+            'area'=>'required|integer|exists:specialist_areas,id',
+            'email'=>[
+                'required',
+                'email',
+                Rule::unique('users')->ignore($specialist->id_user),
+            ],
+            'whatsapp'=>[
+                'required', 
+                'regex:/^[0-9]{10}$/',
+                Rule::unique('users')->ignore($specialist->id_user),
+            ],
+            'password'=>['nullable', 'confirmed', Password::default()]
+        ]);
+
+        $user = User::find($specialist->id_user);
+
+        DB::transaction(function() use($request, $specialist, $user){
+            $specialist->area = $request->area;
+            $specialist->save();
+            
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->whatsapp = $request->whatsapp;
+
+            if(!empty($request->password))
+                $user->password = Hash::make($request->password);
+
+            $user->save();
+
+        });
+
+        return redirect()->route('specialists.index');
     }
 
     /**
@@ -89,6 +118,25 @@ class SpecialistController extends Controller
      */
     public function destroy(Specialist $specialist)
     {
-        //
+
+        if($specialist->homework()->count() > 0){
+            return redirect()->route('specialists.index')->with('messagge', 'El especialista tiene tareas asignadas, no se puede eliminar');   
+        }
+
+        if($specialist->paymentSpecialists()->count() > 0){
+            return redirect()->route('specialists.index')->with('messagge', 'El especialista tiene pagos registrados, no se puede eliminar');
+        }
+
+        $user = User::find($specialist->id_user);
+
+        DB::transaction(function() use($user, $specialist){
+            $specialist->delete();
+            
+            $user->removeRole('specialist');
+            $user->delete();
+        });
+
+        return redirect()->route('specialists.index')->with('message', 'Especialista eliminado con exito');
+
     }
 }

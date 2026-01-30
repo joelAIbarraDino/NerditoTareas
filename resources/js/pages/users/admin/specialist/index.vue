@@ -4,13 +4,13 @@ import ButtonNewRegister from '@/components/ButtonNewRegister.vue';
 import { TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { AppPageProps, BreadcrumbItem, Specialist } from '@/types';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, router, usePage, Link } from '@inertiajs/vue3';
 import { Pencil, Trash } from 'lucide-vue-next';
 import { computed } from 'vue';
 import Swal from 'sweetalert2';
 
 const breadcrumbs: BreadcrumbItem[] = [{title: 'Especialistas', href: '#'}]
-const columnsName = ['Nombre', 'Especialidad', 'Acciones'];
+const columnsName = ['Nombre', 'WhatsApp', 'Especialidad', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
     specialists: Specialist[]
@@ -55,7 +55,16 @@ const deleteSpecialist = async(id:number)=>{
             <TableRecords caption="Lista de especialistas" :columns-head="columnsName">
                 <TableRow v-for="specialist in specialists":for="specialist.id">
                     <TableCell>{{ specialist.user?.name??'Sin nombre' }}</TableCell>
-                    <TableCell>{{ specialist.specialist_area?.name??'Sin area de especialidad' }}</TableCell>
+                    <TableCell>
+                        <Link :href="`https://wa.me/52${specialist.user.whatsapp}`" class="hover:underline hover:text-green-600">
+                            Abrir WhatsApp
+                        </Link>
+                    </TableCell>
+                    <TableCell>
+                        <div class="bg-orange-600 text-center text-white font-black rounded-sm w-8/10">
+                            {{ specialist.specialist_area?.name??'Sin area de especialidad' }}
+                        </div>
+                    </TableCell>
 
                     <TableActions>
                         <TableRecordButton

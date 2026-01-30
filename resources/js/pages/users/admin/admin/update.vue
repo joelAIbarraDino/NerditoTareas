@@ -10,19 +10,17 @@ import { AppPageProps, BreadcrumbItem, User } from '@/types';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { computed } from 'vue';
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {title:"Supervisores", href:"/supervisors"},
+    {title:"Actualizar", href:"#"}
+];
+
 interface adminEditPageProps extends AppPageProps{
     admin: User;
 }
 
 const page = usePage<adminEditPageProps>();
-
 const admin = computed(()=> page.props.admin);
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {title:"Supervisores", href:"/supervisors"},
-    {title:"Editar", href:"#"}
-];
-
 
 const form = useForm({
     name:admin.value.name,
