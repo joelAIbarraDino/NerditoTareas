@@ -36,7 +36,7 @@ class AdminController extends Controller
         $request->validate([
             'name'=>'required|string',
             'email'=>'required|email|unique:users,email',
-            'whatsapp'=>[ 'required', 'regex:/^[0-9]{10}$/' ],
+            'whatsapp'=>[ 'required', 'regex:/^[0-9]{10}$/', 'unique:users,whatsapp'],
             'password'=>['required', 'confirmed', Password::default()]
         ]);
 

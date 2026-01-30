@@ -37,7 +37,7 @@ class SpecialistAreaController extends Controller
 
         SpecialistArea::create($request->all());
 
-        return redirect()->route('specialist-area.index');
+        return redirect()->route('specialist-areas.index');
     }
 
     /**
@@ -46,7 +46,7 @@ class SpecialistAreaController extends Controller
     public function edit(SpecialistArea $specialist_area)
     {
         return Inertia::render('users/admin/specialistArea/update', [
-            'specialist_area'=>$specialist_area,
+            'specialistArea'=>$specialist_area,
         ]);
     }
 
@@ -63,7 +63,7 @@ class SpecialistAreaController extends Controller
 
         $specialist_area->save();
 
-        return redirect()->route('specialist-area.index');
+        return redirect()->route('specialist-areas.index');
     }
 
     /**
@@ -72,11 +72,11 @@ class SpecialistAreaController extends Controller
     public function destroy(SpecialistArea $specialist_area)
     {
         if($specialist_area->specialists()->count() > 0){
-            return redirect()->route('specialist-area.index')->with('message', 'Hay un especialista con esta area asignado, no se puede eliminar');
+            return redirect()->route('specialist-areas.index')->with('message', 'Hay un especialista con esta area asignada, no se puede eliminar');
         }
 
         $specialist_area->delete();
 
-        return redirect()->route('specialist-area.index');
+        return redirect()->route('specialist-areas.index');
     }
 }

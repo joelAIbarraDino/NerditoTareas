@@ -41,6 +41,15 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Specialist {
+    id:number;
+    id_user:number;
+    user:User;
+    specialist_area:SpecialistArea;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface SpecialistArea{
     id:number;
     name:string;

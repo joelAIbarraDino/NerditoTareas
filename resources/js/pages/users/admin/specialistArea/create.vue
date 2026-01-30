@@ -20,7 +20,7 @@ const form = useForm({
 });
 
 function submit(){
-  form.post('/specialist-area',{
+  form.post('/specialist-areas',{
     preserveScroll:true,
     onSuccess: () => form.reset()
   })
@@ -34,7 +34,7 @@ function submit(){
     <AppLayout :breadcrumbs="breadcrumbs" class="relative">
       <LoadingOverlay :show="form.processing" />
       <RecordForm>
-        <RecordFormHeader title-form="Nueva area" return-url="/specialist-area"/>
+        <RecordFormHeader title-form="Nueva area" return-url="/specialist-areas"/>
         <RecordFormBody  :handle="submit">
 
             <div class="flex gap-6 flex-col md:flex-row">

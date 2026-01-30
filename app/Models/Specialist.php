@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Specialist extends Model
 {
-    
+    protected $fillable = [
+        'id_user',
+        'area'
+    ];
+
     public function user(){
         return $this->belongsTo(User::class, 'id_user');
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, User, Glasses } from 'lucide-vue-next';
+import { LayoutGrid, User, Glasses, NotebookTabs } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -32,9 +32,15 @@ const mainNavItems: NavItem[] = [
     },
 
     {
-        title: 'Area de especialistas',
-        href: '/specialist-area',
+        title: 'Especialistas',
+        href: '/specialists',
         icon: Glasses,
+    },
+
+    {
+        title: 'Area de especialistas',
+        href: '/specialist-areas',
+        icon: NotebookTabs,
     },
 ];
 

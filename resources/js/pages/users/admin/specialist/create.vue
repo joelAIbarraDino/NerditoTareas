@@ -1,39 +1,40 @@
 <script setup lang="ts">
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from '@/components/ui/select'
 import { RecordForm, RecordFormBody, RecordFormHeader, RecordFormSubmit } from '@/components/recordForm';
 import { LoadingOverlay } from '@/components/overlay';
 import InputError from '@/components/InputError.vue';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {Head, useForm, usePage} from '@inertiajs/vue3';
-import { AppPageProps, BreadcrumbItem, User } from '@/types';
+import { AppPageProps, BreadcrumbItem, SpecialistArea } from '@/types';
 
 import AppLayout from '@/layouts/AppLayout.vue';
 import { computed } from 'vue';
 
-interface adminEditPageProps extends AppPageProps{
-    admin: User;
-}
-
-const page = usePage<adminEditPageProps>();
-
-const admin = computed(()=> page.props.admin);
-
 const breadcrumbs: BreadcrumbItem[] = [
-    {title:"Supervisores", href:"/supervisors"},
-    {title:"Editar", href:"#"}
+    {title:"Especialistas", href:"/specialists"},
+    {title:"Crear", href:"#"}
 ];
 
+interface SpecialistPageProps extends AppPageProps{
+    specialistAreas:SpecialistArea[];
+}
 
 const form = useForm({
-    name:admin.value.name,
-    email:admin.value.email,
-    whatsapp:admin.value.whatsapp,
+    name:'',
+    area:'',
+    email:'',
+    whatsapp:'',
     password:'',
     password_confirmation:'',
 });
 
+const page = usePage<SpecialistPageProps>();
+const specialistAreaArray = computed(()=>page.props.specialistAreas);
+
+
 function submit(){
-  form.put(`/admins/${admin.value.id}`,{
+  form.post('/specialists',{
     preserveScroll:true,
     onSuccess: () => form.reset()
   })
@@ -43,11 +44,11 @@ function submit(){
 </script>
 
 <template>
-    <Head title="Editar administrador"/>
+    <Head title="Nuevo especialista"/>
     <AppLayout :breadcrumbs="breadcrumbs" class="relative">
       <LoadingOverlay :show="form.processing" />
       <RecordForm>
-        <RecordFormHeader title-form="Editar adminstrador" return-url="/admins"/>
+        <RecordFormHeader title-form="Nuevo especialista" return-url="/specialists"/>
         <RecordFormBody  :handle="submit">
 
             <div class="flex gap-6 flex-col md:flex-row">
@@ -66,13 +67,33 @@ function submit(){
 
             <div class="flex gap-6 flex-col md:flex-row">
                 <div class="flex-1 grid gap-1">
+                    <Label for="area">Area de especialidad</Label>
+
+                    <Select v-model="form.area" class="w-full" id="area">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Seleccione un area de especialidad"/>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Areas</SelectLabel>
+                                <SelectItem v-for="specialistArea in specialistAreaArray":key="specialistArea.id" :value="specialistArea.id">{{ specialistArea.name }}</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+
+                    </Select>
+                    <InputError class="mt-1" :message="form.errors.area" />
+                </div>
+            </div>
+
+            <div class="flex gap-6 flex-col md:flex-row">
+                <div class="flex-1 grid gap-1">
                     <Label for="email">Correo</Label>
                     <Input
                         id="email"
                         type="email"
                         class="mt-1 block w-full"
                         v-model="form.email"
-                        disabled
                         placeholder="Correo de administrador"
                     />
                     <InputError class="mt-1" :message="form.errors.email" />
