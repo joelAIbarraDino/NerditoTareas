@@ -3,25 +3,25 @@ import { TableActions, TableRecordButton, TableRecords, TablePagination } from '
 import ButtonNewRegister from '@/components/ButtonNewRegister.vue';
 import { TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { AppPageProps, BreadcrumbItem, Specialist } from '@/types';
+import { AppPageProps, BreadcrumbItem, Client } from '@/types';
 import { Head, router, usePage, Link } from '@inertiajs/vue3';
 import { Pencil, Trash } from 'lucide-vue-next';
 import { computed } from 'vue';
 import Swal from 'sweetalert2';
 
-const breadcrumbs: BreadcrumbItem[] = [{title: 'Especialistas', href: '#'}]
-const columnsName = ['Nombre', 'WhatsApp', 'Correo', 'Especialidad', 'Acciones'];
+const breadcrumbs: BreadcrumbItem[] = [{title: 'Clientes', href: '#'}]
+const columnsName = ['Nombre', 'WhatsApp', 'Email', 'Nivel de estudios', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
-    specialists: Specialist[]
+    clients: Client[]
 }
 
 const page = usePage<adminPageProps>();
 
-const specialists = computed(() => page.props.specialists);
+const clients = computed(() => page.props.clients);
 const flash = computed(() => page.props.flash);
 
-const deleteSpecialist = async(id:number)=>{
+const deleteClient = async(id:number)=>{
     const result = await Swal.fire({
         title: '¿Estás seguro?',
         text: "¡No podrás revertir esto!",
@@ -35,7 +35,7 @@ const deleteSpecialist = async(id:number)=>{
 
     if(!result.isConfirmed)return;
 
-    router.delete(`/specialists/${id}`, {
+    router.delete(`/clients/${id}`, {
         preserveScroll:true,
         onSuccess:()=>{
             Swal.fire('Resultado', flash.value.message, 'info');
@@ -47,23 +47,23 @@ const deleteSpecialist = async(id:number)=>{
 </script>
 
 <template>
-    <Head title="Especialistas"/>
+    <Head title="Clientes"/>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <ButtonNewRegister url="/specialists/create" text="Nuevo especialista"/>
+            <ButtonNewRegister url="/clients/create" text="Nuevo cliente"/>
 
-            <TableRecords caption="Lista de especialistas" :columns-head="columnsName">
-                <TableRow v-for="specialist in specialists":for="specialist.id">
-                    <TableCell>{{ specialist.user?.name??'Sin nombre' }}</TableCell>
+            <TableRecords caption="Lista de clientes" :columns-head="columnsName">
+                <TableRow v-for="client in clients":for="client.id">
+                    <TableCell>{{ client.user?.name??'Sin nombre' }}</TableCell>
                     <TableCell>
-                        <Link :href="`https://wa.me/52${specialist.user.whatsapp}`" class="hover:underline hover:text-green-600">
+                        <Link :href="`https://wa.me/52${client.user.whatsapp}`" class="hover:underline hover:text-green-600">
                             Abrir WhatsApp
                         </Link>
                     </TableCell>
-                    <TableCell>{{ specialist.user?.email }}</TableCell>
+                    <TableCell>{{ client.user?.email ?? 'Sin correo especificado' }}</TableCell>
                     <TableCell>
-                        <div class="bg-orange-600 text-center text-white font-black rounded-sm w-8/10">
-                            {{ specialist.specialist_area?.name??'Sin area de especialidad' }}
+                        <div class="bg-blue-600 text-center text-white font-black rounded-sm w-8/10">
+                            {{ client.educational_level??'Nivel de estudios no especificado' }}
                         </div>
                     </TableCell>
 
@@ -73,7 +73,7 @@ const deleteSpecialist = async(id:number)=>{
                             color="bg-cyan-600"
                             hover="bg-cyan-700"
                             :icon=Pencil
-                            :action="`/specialists/${specialist.id}/edit`"
+                            :action="`/clients/${client.id}/edit`"
                         />
 
                         <TableRecordButton
@@ -81,7 +81,7 @@ const deleteSpecialist = async(id:number)=>{
                             color="bg-red-700"
                             hover="bg-red-600"
                             :icon=Trash
-                            :action="() => deleteSpecialist(specialist.id)"
+                            :action="() => deleteClient(client.id)"
                         />
                         
                     </TableActions>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, User, Glasses, NotebookTabs } from 'lucide-vue-next';
+import { LayoutGrid, User, Glasses, NotebookTabs, Handshake } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -23,6 +23,12 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+
+    {
+        title: 'Clientes',
+        href: '/clients',
+        icon: Handshake,
     },
 
     {

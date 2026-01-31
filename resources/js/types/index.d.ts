@@ -44,10 +44,26 @@ export interface User {
 export interface Specialist {
     id:number;
     id_user:number;
-    user:User;
+    area:number;
     specialist_area:SpecialistArea;
+    user:User;
     created_at: string;
     updated_at: string;
+}
+
+export interface Client {
+    id:number;
+    id_user:number;
+    educational_level:string;
+    user:User;
+    created_at: string;
+    updated_at: string;    
+
+}
+
+export interface Enum{
+    value:string;
+    label:string;
 }
 
 export interface SpecialistArea{

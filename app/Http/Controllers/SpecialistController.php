@@ -47,17 +47,17 @@ class SpecialistController extends Controller
             'password'=>['required', 'confirmed', Password::default()]
         ]);
 
-        
-        $user = User::create($request->only(['name', 'email', 'whatsapp', 'password']));
-        $user->assignRole('specialist');
+        DB::transaction(function() use($request){
+            $user = User::create($request->only(['name', 'email', 'whatsapp', 'password']));
+            $user->assignRole('specialist');
 
-        $specialist = new Specialist;
+            $specialist = new Specialist;
 
-        $specialist->id_user = $user->id;
-        $specialist->area = $request->area;
-        $specialist->save();
-    
-
+            $specialist->id_user = $user->id;
+            $specialist->area = $request->area;
+            $specialist->save();
+        });
+                
         return redirect()->route('specialists.index');
     }
 

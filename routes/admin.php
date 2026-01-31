@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileAdminController;
 use App\Http\Controllers\SpecialistAreaController;
 use App\Http\Controllers\SpecialistController;
@@ -10,3 +11,4 @@ Route::get('dashboard', [ProfileAdminController::class, 'index'])->middleware(['
 Route::resource('admins', AdminController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('specialists', SpecialistController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('specialist-areas', SpecialistAreaController::class)->middleware(['auth', 'verified', 'role:admin']);
+Route::resource('clients', ClientController::class)->middleware(['auth', 'verified', 'role:admin']);
