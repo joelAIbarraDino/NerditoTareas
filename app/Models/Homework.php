@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Homework extends Model
 {
     
-    public function user(){
+    public function admin(){
         return $this->belongsTo(User::class, 'admin');
     }
 

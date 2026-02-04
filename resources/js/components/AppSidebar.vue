@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, User, Glasses, NotebookTabs, Handshake } from 'lucide-vue-next';
+import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -26,6 +26,12 @@ const mainNavItems: NavItem[] = [
     },
 
     {
+        title: 'Tareas',
+        href: '/homework',
+        icon: BookA
+    },
+
+    {
         title: 'Clientes',
         href: '/clients',
         icon: Handshake,
@@ -46,6 +52,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Area de especialistas',
         href: '/specialist-areas',
+        icon: LayoutList,
+    },
+
+    {
+        title: 'Tipo de tareas',
+        href: '/type-homework',
         icon: NotebookTabs,
     },
 ];
