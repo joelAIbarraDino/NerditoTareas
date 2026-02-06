@@ -7,6 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 class Homework extends Model
 {
     
+    protected $fillable = [
+        'order_id',
+        'private_order_id',
+        'name',
+        'description',
+        'admin',
+        'client',
+        'conversion',
+        'type_homework',
+        'client_delivery',
+        'specialist_delivery',
+        'drive_link',
+        'status',
+        'change',
+        'specialist',
+        'final_price',
+        'specialist_payment',
+        'proft',
+        'amount_paid',
+    ];
+
     public function admin(){
         return $this->belongsTo(User::class, 'admin');
     }

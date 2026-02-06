@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ConversionOrigin;
+use App\Enums\HomeworkChange;
+use App\Enums\HomeworkStatus;
 use App\Models\Client;
 use App\Models\Homework;
 use App\Models\Specialist;
 use App\Models\TypeHomework;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
 
 class HomeworkController extends Controller
@@ -17,7 +22,7 @@ class HomeworkController extends Controller
     public function index()
     {
         return Inertia::render('users/admin/homework/index', [
-            'homework'=>Homework::with(['admin', 'client', 'specialist', 'typeHomework'])->get()
+            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework'])->get()
         ]);
     }
 
@@ -28,8 +33,9 @@ class HomeworkController extends Controller
     {
         return Inertia::render('users/admin/homework/create', [
             'typesHomework' => TypeHomework::all(),
-            'specialists'=>Specialist::all(),
-            'clients'=>Client::all(),
+            'specialists'=>Specialist::with('user')->get(),
+            'clients'=>Client::with('user')->get(),
+            'conversions'=>ConversionOrigin::options(),
         ]);
     }
 
@@ -38,15 +44,49 @@ class HomeworkController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-    }
+        $request->validate([
+            'name'=>'required|string',
+            'description'=>'required|string',
+            'client'=>'required|integer|exists:clients,id',
+            'conversion'=>['required', new Enum(ConversionOrigin::class)],
+            'specialist'=>'nullable|integer|exists:specialists,id',
+            'type_homework'=>'required|integer|exists:type_homework,id',
+            'client_delivery'=>'required|string',
+            'specialist_delivery'=>'required|string',
+            'drive_link'=>'nullable|url',
+            'final_price'=>'required|numeric|min:0.0',
+            'specialist_payment'=>'required|numeric|min:0.0',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+
+        $homework = new Homework;
+
+        $homework->name = $request->name;
+        $homework->description = $request->description;
+        $homework->client = $request->client;
+        $homework->conversion = $request->conversion;
+        $homework->type_homework = $request->type_homework;
+        $homework->client_delivery = $request->client_delivery;
+        $homework->specialist_delivery = $request->specialist_delivery;
+        $homework->drive_link = $request->drive_link;
+        $homework->specialist = $request->specialist;
+        $homework->final_price = $request->final_price;
+        $homework->specialist_payment = $request->specialist_payment;
+        $homework->amount_paid = 0;
+        $homework->proft = $request->final_price - $request->specialist_payment;
+
+
+        $homework->status = $request->filled('specialist') ? HomeworkStatus::Assigned : HomeworkStatus::Unassigned;
+        $homework->change = HomeworkChange::NoChange;
+        $homework->order_id = $this->generarCodigoControl();
+        $homework->admin = Auth::id();
+
+        $homework->save();
+
+        $homework->private_order_id = $this->generarCodigoControlInterno($homework->id);
+        $homework->save();
+
+        return redirect()->route('homework.index');
     }
 
     /**
@@ -68,8 +108,37 @@ class HomeworkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Homework $homework)
     {
-        //
+        if($homework->payments()->count() > 0)
+            return redirect()->route('homework.index')->with('message', 'Esta tarea tiene un pago registrado, no se puede eliminar');
+
+        if($homework->status === HomeworkStatus::Assigned)
+            return redirect()->route('homework.index')->with('message', 'Esta tarea esta asignado a un especialista, no se puede eliminar');
+
+
+        $homework->delete();
+
+        return redirect()->route('homework.index');
+    }
+
+    public function generarCodigoControl()
+    {
+        $prefijo = 'NTC-';
+        
+        // Generamos 10 dígitos aleatorios
+        $numeros = '';
+        for ($i = 0; $i < 10; $i++) {
+            $numeros .= random_int(0, 9);
+        }
+
+        return $prefijo . $numeros;
+    }
+
+    public function generarCodigoControlInterno($id)
+    {
+        $prefijo = 'NT-';
+        
+        return $prefijo . str_pad($id, 5, '0', STR_PAD_LEFT);
     }
 }

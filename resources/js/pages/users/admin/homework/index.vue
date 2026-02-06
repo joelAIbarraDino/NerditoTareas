@@ -10,7 +10,7 @@ import { computed } from 'vue';
 import Swal from 'sweetalert2';
 
 const breadcrumbs: BreadcrumbItem[] = [{title: 'Tareas',href: '#'}]
-const columnsName = ['Order ID', 'Tarea', 'Cliente', 'Status', 'Especialista', 'Acciones'];
+const columnsName = ['Order ID', 'Order ID Publico', 'Tarea', 'Cliente', 'Status', 'Especialista', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
     homework: Homework[]
@@ -54,11 +54,12 @@ const deleteHomework = async(id:number)=>{
 
             <TableRecords caption="Lista de tareas" :columns-head="columnsName">
                 <TableRow v-for="homework in homeworkArray":for="homework.id">
+                    <TableCell>{{ homework.private_order_id }}</TableCell>
                     <TableCell>{{ homework.order_id }}</TableCell>
                     <TableCell>{{ homework.name }}</TableCell>
-                    <TableCell>{{ homework.specialist?.user?.name ?? 'Tarea no asignada' }}</TableCell>
-                    <TableCell>{{ homework.client.user?.name }}</TableCell>
+                    <TableCell>{{ homework.client.user.name }}</TableCell>
                     <TableCell>{{ homework.status }}</TableCell>
+                    <TableCell>{{ homework.specialist?.user.name ?? 'Sin especialista' }}</TableCell>
 
                     <TableActions>
                         <TableRecordButton

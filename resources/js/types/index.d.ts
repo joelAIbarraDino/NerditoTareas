@@ -71,6 +71,7 @@ export interface SpecialistArea{
 export interface Homework{
     id:number;
     order_id:string;
+    private_order_id:string;
     name:string;
     description:string;
     admin: User;
