@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeworkController;
+use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\ProfileAdminController;
 use App\Http\Controllers\SpecialistAreaController;
 use App\Http\Controllers\SpecialistController;
@@ -16,3 +17,5 @@ Route::resource('specialist-areas', SpecialistAreaController::class)->middleware
 Route::resource('clients', ClientController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('homework', HomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('type-homework', TypeHomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
+
+Route::post('/homework/{homework}/payment-link', [MercadoPagoController::class, 'generatePaymentLink'])->middleware(['auth', 'verified', 'role:admin'])->name('mercado-pago.generatePaymentLink');
