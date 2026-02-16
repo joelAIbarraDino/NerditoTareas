@@ -18,7 +18,6 @@ class Homework extends Model
         'type_homework',
         'client_delivery',
         'specialist_delivery',
-        'drive_link',
         'status',
         'change',
         'specialist',

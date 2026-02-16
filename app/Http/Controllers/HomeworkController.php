@@ -53,7 +53,6 @@ class HomeworkController extends Controller
             'type_homework'=>'required|integer|exists:type_homework,id',
             'client_delivery'=>'required|string',
             'specialist_delivery'=>'required|string',
-            'drive_link'=>'nullable|url',
             'final_price'=>'required|numeric|min:0.0',
             'specialist_payment'=>'required|numeric|min:0.0',
         ]);
@@ -68,7 +67,6 @@ class HomeworkController extends Controller
         $homework->type_homework = $request->type_homework;
         $homework->client_delivery = $request->client_delivery;
         $homework->specialist_delivery = $request->specialist_delivery;
-        $homework->drive_link = $request->drive_link;
         $homework->specialist = $request->specialist;
         $homework->final_price = $request->final_price;
         $homework->specialist_payment = $request->specialist_payment;
