@@ -51,4 +51,8 @@ class Homework extends Model
     public function typeHomework(){
         return $this->belongsTo(TypeHomework::class, 'type_homework');
     }
+
+    public function homeworkDocuments(){
+        return $this->hasMany(HomeworkDocument::class, 'id_homework');
+    }
 }
