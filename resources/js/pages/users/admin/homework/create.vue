@@ -219,19 +219,6 @@ function submit(){
                     <InputError class="mt-1" :message="form.errors.final_price" />
                 </div>
             </div>
-
-            <div class="flex-1 grid gap-2">
-                <Label for="client_delivery">URL de drive (opcional)</Label>
-                <Input
-                    id="name"
-                    type="url"
-                    class="mt-1 block w-full"
-                    v-model="form.drive_link"
-                    placeholder="URL del drive donde se subira la tarea"
-                />
-                <InputError class="mt-1" :message="form.errors.drive_link" />
-            </div>
-
             <RecordFormSubmit/>
         </RecordFormBody>
       </RecordForm>

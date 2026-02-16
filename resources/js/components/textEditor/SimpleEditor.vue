@@ -13,7 +13,7 @@ const editor = useEditor({
   // Clases de Tailwind para que el editor se vea bien
   editorProps: {
     attributes: {
-      class: 'prose prose-sm focus:outline-none p-4 min-h-[120px] max-w-none',
+      class: 'prose prose-sm focus:outline-none p-4 min-h-[200px] max-w-none',
     },
   },
   // Cuando el usuario escribe, enviamos el HTML a la base de datos

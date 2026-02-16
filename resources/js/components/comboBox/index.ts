@@ -1,0 +1,1 @@
+export {default as ClienteCombobox} from './ClienteCombobox.vue';

@@ -22,7 +22,8 @@ class HomeworkController extends Controller
     public function index()
     {
         return Inertia::render('users/admin/homework/index', [
-            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework'])->get()
+            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework'])->get(),
+            'specialists'=>Specialist::with('user')->get(),
         ]);
     }
 
@@ -118,6 +119,20 @@ class HomeworkController extends Controller
         $homework->delete();
 
         return redirect()->route('homework.index');
+    }
+
+    public function assign(Request $request, Homework $homework){
+
+        $request->validate([
+            'specialist_id'=>"required|integer|exists:specialists,id",
+        ]);
+
+        $homework->update([
+            'specialist' => $request->specialist_id,
+            'status' => HomeworkStatus::Assigned,
+        ]);
+
+        return back()->with('message', 'Tarea asignada correctamente');
     }
 
     public function generarCodigoControl()

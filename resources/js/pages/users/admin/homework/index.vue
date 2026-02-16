@@ -3,7 +3,7 @@ import { TableActions, TableRecordButton, TableRecords, TablePagination } from '
 import ButtonNewRegister from '@/components/ButtonNewRegister.vue';
 import { TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { AppPageProps, BreadcrumbItem, Homework } from '@/types';
+import { AppPageProps, BreadcrumbItem, Homework, Specialist } from '@/types';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import { Pencil, Trash, Landmark } from 'lucide-vue-next';
 import { computed } from 'vue';
@@ -13,13 +13,31 @@ const breadcrumbs: BreadcrumbItem[] = [{title: 'Tareas',href: '#'}]
 const columnsName = ['Order ID', 'Order ID Publico', 'Tarea', 'Cliente', 'Status', 'Especialista', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
-    homework: Homework[]
+    homework: Homework[];
+    specialists : Specialist[];
 }
 
 const page = usePage<adminPageProps>();
 
 const homeworkArray = computed(() => page.props.homework);
+const specialists = computed(()=> page.props.specialists);
+
 const flash = computed(() => page.props.flash);
+
+const updateSpecialist = (homeworkID: number, specialistID:number) =>{
+    router.patch(`/homework/${homeworkID}/assign`, {
+        specialist_id: specialistID
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Opcional: una notificación pequeña (Toast)
+            console.log('Especialista actualizado');
+        },
+        onError: () => {
+            Swal.fire('Error', 'No se pudo actualizar el especialista', 'error');
+        }
+    });
+}
 
 const deleteHomework = async(id:number)=>{
     const result = await Swal.fire({
@@ -59,8 +77,22 @@ const deleteHomework = async(id:number)=>{
                     <TableCell>{{ homework.name }}</TableCell>
                     <TableCell>{{ homework.client.user.name }}</TableCell>
                     <TableCell>{{ homework.status }}</TableCell>
-                    <TableCell>{{ homework.specialist?.user.name ?? 'Sin especialista' }}</TableCell>
-
+                    <TableCell>
+                        <select 
+                            class="p-1 border rounded bg-transparent text-sm focus:ring-2 focus:ring-blue-500"
+                            :value="homework.specialist?.id" 
+                            @change="(e) => updateSpecialist(homework.id, Number((e.target as HTMLSelectElement).value))"
+                        >
+                            <option value="" disabled >Sin especialista</option>
+                            <option 
+                                v-for="spec in specialists" 
+                                :key="spec.id" 
+                                :value="spec.id"
+                            >
+                                {{ spec.user.name }}
+                            </option>
+                        </select>
+                    </TableCell>
                     <TableActions>
                         <TableRecordButton
                             type="url"
