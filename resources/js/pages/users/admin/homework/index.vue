@@ -5,7 +5,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { AppPageProps, BreadcrumbItem, Homework } from '@/types';
 import { Head, router, usePage } from '@inertiajs/vue3';
-import { Pencil, Trash } from 'lucide-vue-next';
+import { Pencil, Trash, Landmark } from 'lucide-vue-next';
 import { computed } from 'vue';
 import Swal from 'sweetalert2';
 
@@ -62,6 +62,14 @@ const deleteHomework = async(id:number)=>{
                     <TableCell>{{ homework.specialist?.user.name ?? 'Sin especialista' }}</TableCell>
 
                     <TableActions>
+                        <TableRecordButton
+                            type="url"
+                            color="bg-amber-300"
+                            hover="bg-amber-500"
+                            :icon=Landmark
+                            :action="`/mercado-pago/${homework.id}`"
+                        />
+
                         <TableRecordButton
                             type="url"
                             color="bg-cyan-600"

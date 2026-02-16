@@ -18,4 +18,6 @@ Route::resource('clients', ClientController::class)->middleware(['auth', 'verifi
 Route::resource('homework', HomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('type-homework', TypeHomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 
-Route::post('/homework/{homework}/payment-link', [MercadoPagoController::class, 'generatePaymentLink'])->middleware(['auth', 'verified', 'role:admin'])->name('mercado-pago.generatePaymentLink');
+
+Route::get('mercado-pago/{homework}', [MercadoPagoController::class, 'show'])->middleware(['auth', 'verified', 'role:admin' ])->name('mercado-pago.show');
+Route::post('mercado-pago/{homework}/payment-link', [MercadoPagoController::class, 'generatePaymentLink'])->middleware(['auth', 'verified', 'role:admin'])->name('mercado-pago.generatePaymentLink');

@@ -16,8 +16,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_homework');
             $table->float('amount', 2)->default(0.0);
+            $table->string('mp_link');
             $table->enum('status', PaymentStatus::cases())->default(PaymentStatus::Pending);
             $table->timestamps();
+
+            $table->foreign('id_homework')->references('id')->on('homework');
         });
     }
 
