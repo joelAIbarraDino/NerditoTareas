@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from '@/components/ui/select'
 import { RecordForm, RecordFormBody, RecordFormHeader, RecordFormSubmit } from '@/components/recordForm';
+import { AppPageProps, BreadcrumbItem, Client, Enum, Specialist, TypeHomework } from '@/types';
+import { CurrencyInput } from '@/components/currencyMoney';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { SimpleEditor } from '@/components/textEditor';
 import { LoadingOverlay } from '@/components/overlay';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {Head, useForm, usePage} from '@inertiajs/vue3';
-import { AppPageProps, BreadcrumbItem, Client, Enum, Specialist, TypeHomework } from '@/types';
+import { computed } from 'vue';
 
 import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {title:"Tareas", href:"/homework"},
@@ -40,8 +41,8 @@ const form = useForm({
     specialist_delivery:'',
     drive_link:'',
     specialist:'',
-    final_price:'',
-    specialist_payment:'',
+    final_price:null,
+    specialist_payment:null,
 });
 
 function submit(){
@@ -201,9 +202,9 @@ function submit(){
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex-1 grid gap-2">
                     <Label for="specialist_payment">Pago al especialista</Label>
-                    <Input
-                        type="number"
-                        id="specialist_payment"     
+                    <CurrencyInput
+                        id="specialist_payment"
+                        placeholder="Pago a especialista"
                         v-model="form.specialist_payment"
                     />
                     <InputError class="mt-1" :message="form.errors.specialist_payment" />
@@ -211,9 +212,9 @@ function submit(){
 
                 <div class="flex-1 grid gap-2">
                     <Label for="final_price">Precio final</Label>
-                    <Input
-                        type="number"
-                        id="final_price"     
+                    <CurrencyInput
+                        id="final_price"
+                        placeholder="Precio al cliente"
                         v-model="form.final_price"
                     />
                     <InputError class="mt-1" :message="form.errors.final_price" />

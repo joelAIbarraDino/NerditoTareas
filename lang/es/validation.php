@@ -283,5 +283,15 @@ return [
         'winner'                   => 'ganador',
         'work'                     => 'trabajo',
         'year'                     => 'año',
+        
+        //atributes from homework
+        'client'                   => 'cliente',
+        'conversion'               => 'conversion',
+        'type_homework'            => 'tipo de tarea',
+        'specialist'               => 'especialista',
+        'client_delivery'          => 'entrega al cliente',
+        'specialist_delivery'      => 'entrega del especialista',
+        'specialist_payment'       => 'pago al especialista',
+        'final_price'              => 'precio final',
     ],
 ];

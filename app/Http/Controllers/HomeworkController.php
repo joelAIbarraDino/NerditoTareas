@@ -54,8 +54,8 @@ class HomeworkController extends Controller
             'type_homework'=>'required|integer|exists:type_homework,id',
             'client_delivery'=>'required|string',
             'specialist_delivery'=>'required|string',
-            'final_price'=>'required|numeric|min:0.0',
-            'specialist_payment'=>'required|numeric|min:0.0',
+            'final_price'=>'required|numeric|min:0',
+            'specialist_payment'=>'required|numeric|min:0.0|lte:final_price',
         ]);
 
 
