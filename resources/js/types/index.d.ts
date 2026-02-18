@@ -41,6 +41,25 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface Payment{
+    id:number;
+    order_id:number;
+    payment_provider:string;
+    amount:number;
+    payment_id:string;
+    destination_account:string;
+    method:string;
+    status:string;
+}
+
+export interface OrderPayment{
+    id:number;
+    id_homework:number;
+    amount:number;
+    mp_link:string;
+    status:string;
+}
+
 export interface Specialist {
     id:number;
     id_user:number;
@@ -88,6 +107,8 @@ export interface Homework{
     specialist_payment:number;
     proft:number;
     amount_paid:number;
+    payments:Payment[];
+    order_payments:OrderPayment[];
     created_at: string;
     updated_at: string;
 }

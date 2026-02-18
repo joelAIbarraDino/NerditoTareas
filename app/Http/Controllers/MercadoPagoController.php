@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatus;
 use App\Models\Homework;
+use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use MercadoPago\Client\Preference\PreferenceClient;
@@ -22,11 +24,7 @@ class MercadoPagoController extends Controller
         $pendingAmount = $homework->final_price - $homework->amount_paid;
 
         $request->validate([
-            'amount'=>[
-                'required',
-                'numeric',
-                'max:'.$pendingAmount,
-            ],
+            'amount'=>['required', 'numeric', 'max:'.$pendingAmount],
         ]);
 
         $client = new PreferenceClient();
@@ -45,7 +43,16 @@ class MercadoPagoController extends Controller
                 "external_reference" => (string)$homework->order_id
             ]);
 
-            dd($preference);
+
+            OrderPayment::create([
+                'id_homework' => $homework->id,
+                'amount' => $request->amount,
+                'mp_link' => $preference->sandbox_init_point,
+                'status' => PaymentStatus::Pending,
+            ]);
+
+            return back()->with('message', 'Orden de pago generada correctamente');
+            
 
         }catch(MPApiException $e){
             return response()->json(['error' => $e->getMessage()], 500);

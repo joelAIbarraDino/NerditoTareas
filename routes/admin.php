@@ -17,6 +17,7 @@ Route::resource('specialist-areas', SpecialistAreaController::class)->middleware
 Route::resource('clients', ClientController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('homework', HomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 Route::patch('homework/{homework}/assign', [HomeworkController::class, 'assign'])->middleware(['auth', 'verified', 'role:admin']);
+Route::patch('homework/{homework}/change', [HomeworkController::class, 'changeStatus'])->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('type-homework', TypeHomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 
 

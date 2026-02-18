@@ -47,6 +47,10 @@ class Homework extends Model
         return $this->hasMany(Payment::class, 'order_id');
     }
 
+    public function orderPayments(){
+        return $this->hasMany(OrderPayment::class, 'id_homework');
+    }
+
     public function typeHomework(){
         return $this->belongsTo(TypeHomework::class, 'type_homework');
     }

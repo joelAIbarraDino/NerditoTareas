@@ -12,4 +12,8 @@ class OrderPayment extends Model
         'mp_link',
         'status'
     ];
+
+    public function homework(){
+        return $this->belongsTo(Homework::class, 'id_homework');
+    }
 }

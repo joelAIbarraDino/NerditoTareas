@@ -11,6 +11,7 @@ use App\Models\Specialist;
 use App\Models\TypeHomework;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Inertia\Inertia;
 
@@ -22,8 +23,9 @@ class HomeworkController extends Controller
     public function index()
     {
         return Inertia::render('users/admin/homework/index', [
-            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework'])->get(),
+            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework', 'payments', 'orderPayments'])->get(),
             'specialists'=>Specialist::with('user')->get(),
+            'changeStatus'=>HomeworkChange::options(),
         ]);
     }
 
@@ -122,17 +124,47 @@ class HomeworkController extends Controller
     }
 
     public function assign(Request $request, Homework $homework){
-
         $request->validate([
-            'specialist_id'=>"required|integer|exists:specialists,id",
+            'specialist_id' => ['nullable', 'integer', Rule::exists('specialists', 'id')],
         ]);
+        
+        $currentHomeworkStatus = HomeworkStatus::from($homework->status);
 
+        $status = !is_null($request->specialist_id) ? 
+            match($currentHomeworkStatus){
+                HomeworkStatus::Unassigned => HomeworkStatus::Assigned,
+                default => $homework->status,
+            } : HomeworkStatus::Unassigned;
+    
         $homework->update([
             'specialist' => $request->specialist_id,
-            'status' => HomeworkStatus::Assigned,
+            'status' => $status,
         ]);
 
         return back()->with('message', 'Tarea asignada correctamente');
+    }
+
+    public function changeStatus(Request $request, Homework $homework){
+        $request->validate([
+            'changeStatus'=>['required', new Enum(HomeworkChange::class)],
+        ]);
+
+        $changeStatus = HomeworkChange::from($request->changeStatus);
+
+        $statusFinal = match($changeStatus){
+            HomeworkChange::NoChange => HomeworkStatus::Completed,
+            HomeworkChange::InChange => HomeworkStatus::InChanges,
+            HomeworkChange::ChangeReady => HomeworkStatus::Completed,
+            HomeworkChange::ChangeDelivered => HomeworkStatus::Delivered,
+            HomeworkChange::ChangeRequested => HomeworkStatus::InChanges,
+        };
+
+        $homework->update([
+            'change' => $request->changeStatus,
+            'status' => $statusFinal,
+        ]);
+
+        return back()->with('message', 'Status cambiado correctamente');
     }
 
     public function generarCodigoControl()
