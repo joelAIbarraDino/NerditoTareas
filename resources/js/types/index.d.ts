@@ -28,6 +28,18 @@ export type AppPageProps<
     };
     [key: string]: unknown;
 };
+export interface Role {
+    id: number;
+    name: string;
+    guard_name: string;
+    created_at: string;
+    updated_at: string;
+    pivot: {
+        model_type: string;
+        model_id: number;
+        role_id: number;
+    };
+}
 
 export interface User {
     id: number;
@@ -36,6 +48,7 @@ export interface User {
     whatsapp:string;
     avatar?: string;
     email_verified_at: string | null;
+    roles: Role[];
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

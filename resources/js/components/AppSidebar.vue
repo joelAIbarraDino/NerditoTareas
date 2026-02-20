@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
@@ -17,8 +17,20 @@ import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
 
-const mainNavItems: NavItem[] = [
+const page = usePage();
+
+const role = computed(()=>{
+    const user = page.props.auth?.user;
+    
+    if(user && user.roles && user.roles.length > 0)
+        return user.roles[0].name;
+    else
+        return null;
+});
+
+const adminNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
@@ -62,6 +74,22 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
+const specialistNavItems: NavItem[] = [
+    {
+        title: 'Mis tareas asignadas',
+        href: '/specialist',
+        icon: BookA,
+    },
+]
+
+const clientNavItems: NavItem[] = [
+
+]
+
+const emptyNavItems: NavItem[] = [
+
+]
+
 </script>
 
 <template>
@@ -70,7 +98,15 @@ const mainNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link v-if="role === 'admin'" :href="dashboard()">
+                            <AppLogo />
+                        </Link>
+
+                        <Link v-else-if="role === 'specialist'" href="/specialist">
+                            <AppLogo />
+                        </Link>
+
+                        <Link v-else-if="role === 'client'" href="/client">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -79,7 +115,10 @@ const mainNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain v-if="role === 'admin'" :items="adminNavItems" />
+            <NavMain v-else-if="role === 'specialist'" :items="specialistNavItems" />
+            <NavMain v-else-if="role === 'client'" :items="clientNavItems" />
+            <NavMain v-else :items="emptyNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
