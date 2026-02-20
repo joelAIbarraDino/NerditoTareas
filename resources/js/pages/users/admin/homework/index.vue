@@ -179,7 +179,9 @@ const deleteHomework = async(id:number)=>{
                                     </div>
                                 </div>
 
-                                <form class="grid auto-rows-min gap-3 px-4" @submit.prevent="generateLink(homework.id)">
+                                <form class="grid auto-rows-min gap-3 px-4 my-4" @submit.prevent="generateLink(homework.id)">
+                                    <p class="text-sm font-bold border-b pb-1 mb-2">Generar Link de Mercado Pago</p>
+
                                     <div class="grid gap-2">
                                         <Label for="amount">Monto de pago</Label>
                                         <CurrencyInput
@@ -191,11 +193,11 @@ const deleteHomework = async(id:number)=>{
                                         <InputError class="mt-1" :message="paymentForm.errors.amount" />
                                     </div>
                                     
-                                    <Button type="submit" class="bg-lime-600" :disabled="(homework.final_price - homework.amount_paid) == 0">Generar Link de pago</Button>
+                                    <Button type="submit" class="bg-lime-600">Generar Link de pago</Button>
                                 </form>
 
                                 <div class="mx-4">
-                                    <p class="text-sm font-bold border-b pb-1 mb-2 last:mb-0">Ordenes de pago</p>
+                                    <p class="text-sm font-bold border-b pb-1 mb-2 last:mb-0">Links de Mercado Pago</p>
 
                                     <div v-if="homework.order_payments.length > 0" class="p-2 bg-primary/10 rounded my-3 mx-2 border-primary" v-for="orderPayment in homework.order_payments":key="orderPayment.id">
                                         <div class="text-sm flex">
@@ -246,14 +248,6 @@ const deleteHomework = async(id:number)=>{
 
                         </Sheet>
                         
-                        <TableRecordButton
-                            type="url"
-                            color="bg-cyan-600"
-                            hover="bg-cyan-700"
-                            :icon=Pencil
-                            :action="`/homework/${homework.id}/edit`"
-                        />
-
                         <TableRecordButton
                             type="function"
                             color="bg-red-700"

@@ -37,6 +37,11 @@ return [
 
     'mercadopago' => [
         'token'=>env('MERCADO_PAGO_ACCESS_TOKEN'),
-    ]
+    ],
+
+    'admin' => [
+        'id' => env('ADMIN_ID_OWNER'),
+    ],
+
 
 ];

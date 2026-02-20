@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -89,6 +90,16 @@ class AdminController extends Controller
      */
     public function destroy(User $admin)
     {
+        $idAdminOwner = config('services.admin.id');
+        $idAuth = Auth::id();
+
+        if($admin->id == $idAdminOwner)
+            return redirect()->route('admins.index')->with('message', 'Este administrador no se puede eliminar');
+
+        if($admin->id == $idAuth)
+            return redirect()->route('admins.index')->with('message', 'No se puede eliminar al administrador activo');
+
+
         if($admin->homework()->count() > 0){
             return redirect()->route('admins.index')->with('message', 'El administrador tiene tareas registradas por el');
         }

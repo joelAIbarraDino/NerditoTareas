@@ -179,16 +179,6 @@ function submit(){
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex-1 grid gap-2">
-                    <Label for="client_delivery">Entrega al cliente</Label>
-                    <Input
-                        type="datetime-local"
-                        id="client_delivery"     
-                        v-model="form.client_delivery"
-                    />
-                    <InputError class="mt-1" :message="form.errors.client_delivery" />
-                </div>
-
-                <div class="flex-1 grid gap-2">
                     <Label for="specialist_delivery">Entrega del especialista</Label>
                     <Input
                         type="datetime-local"
@@ -196,6 +186,16 @@ function submit(){
                         v-model="form.specialist_delivery"
                     />
                     <InputError class="mt-1" :message="form.errors.specialist_delivery" />
+                </div>
+                
+                <div class="flex-1 grid gap-2">
+                    <Label for="client_delivery">Entrega al cliente</Label>
+                    <Input
+                        type="datetime-local"
+                        id="client_delivery"     
+                        v-model="form.client_delivery"
+                    />
+                    <InputError class="mt-1" :message="form.errors.client_delivery" />
                 </div>
             </div>
 
