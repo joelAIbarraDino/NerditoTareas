@@ -22,12 +22,18 @@ import { computed } from 'vue';
 const page = usePage();
 
 const role = computed(()=>{
-    const user = page.props.auth?.user;
-    
-    if(user && user.roles && user.roles.length > 0)
+    try {
+        const auth = page.props.auth;
+        if(!auth) return null;
+        
+        const user = auth.user;
+        if(!user || !user.roles || user.roles.length === 0) return null;
+        
         return user.roles[0].name;
-    else
+    } catch (error) {
+        console.error('Error getting user role:', error);
         return null;
+    }
 });
 
 const adminNavItems: NavItem[] = [
@@ -87,7 +93,7 @@ const clientNavItems: NavItem[] = [
 ]
 
 const emptyNavItems: NavItem[] = [
-
+    
 ]
 
 </script>

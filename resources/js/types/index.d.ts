@@ -100,6 +100,14 @@ export interface SpecialistArea{
     updated_at: string;
 }
 
+export interface TypeHomework{
+    id:number;
+    name:string;
+    created_at: string;
+    updated_at: string;
+}
+
+
 export interface Homework{
     id:number;
     order_id:string;
@@ -109,7 +117,7 @@ export interface Homework{
     admin: User;
     client: Client;
     conversion:string;
-    type_homework:string;
+    type_homework:TypeHomework;
     client_delivery:string;
     specialist_delivery:string;
     drive_link:string;
@@ -122,13 +130,6 @@ export interface Homework{
     amount_paid:number;
     payments:Payment[];
     order_payments:OrderPayment[];
-    created_at: string;
-    updated_at: string;
-}
-
-export interface TypeHomework{
-    id:number;
-    name:string;
     created_at: string;
     updated_at: string;
 }
