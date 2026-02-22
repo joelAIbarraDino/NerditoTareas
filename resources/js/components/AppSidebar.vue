@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList } from 'lucide-vue-next';
+import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList, NotebookPen } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -89,12 +89,20 @@ const specialistNavItems: NavItem[] = [
 ]
 
 const clientNavItems: NavItem[] = [
+    {
+        title: 'Mis tareas activas',
+        href: '/client',
+        icon: NotebookPen,
+    },
 
+    {
+        title: 'Pedir tareas',
+        href: '/client/request',
+        icon: Handshake,
+    },
 ]
 
-const emptyNavItems: NavItem[] = [
-    
-]
+const emptyNavItems: NavItem[] = []
 
 </script>
 

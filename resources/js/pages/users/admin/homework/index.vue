@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { TableActions, TableRecordButton, TableRecords, TablePagination } from '@/components/tableRecords';
 import { AppPageProps, BreadcrumbItem, Enum, Homework, Specialist } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
@@ -12,7 +12,6 @@ import { computed, ref } from 'vue';
 
 import ButtonNewRegister from '@/components/ButtonNewRegister.vue';
 import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import Swal from 'sweetalert2';
 
@@ -42,6 +41,20 @@ const generateLink = (homeworkID:number) =>{
     preserveScroll:true,
     onSuccess: () => paymentForm.reset()
   })
+}
+
+const copied = ref(false);
+const copyLink = async (url:string) => {
+    try{
+        await navigator.clipboard.writeText(url)
+        copied.value = true;
+
+        setTimeout(() =>{
+            copied.value = false;
+        }, 1000);
+    }catch(err){
+        console.error("No se pudo copiar el link de mercado pago", err);
+    }
 }
 
 const updateSpecialist = (homeworkID: number, specialistID:number|null) =>{
@@ -198,7 +211,11 @@ const deleteHomework = async(id:number)=>{
 
                                 <div class="mx-4">
                                     <p class="text-sm font-bold border-b pb-1 mb-2 last:mb-0">Links de Mercado Pago</p>
-
+                                    <transition name="fade">
+                                        <span v-if="copied" class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full animate-bounce">
+                                            ¡URL Copiada en el portapales!
+                                        </span>
+                                    </transition>
                                     <div v-if="homework.order_payments.length > 0" class="p-2 bg-primary/10 rounded my-3 mx-2 border-primary" v-for="orderPayment in homework.order_payments":key="orderPayment.id">
                                         <div class="text-sm flex">
                                             <p class="font-bold flex-1">Monto:</p>
@@ -206,7 +223,7 @@ const deleteHomework = async(id:number)=>{
                                         </div>
                                         <div class="text-sm flex">
                                             <p class="font-bold flex-1">Link de MP:</p>
-                                            <TextLink class="flex-1" :href="orderPayment.mp_link">Link de Mercado Pago</TextLink>
+                                            <div @click="copyLink(orderPayment.mp_link)" class="font-bold flex-1 hover:underline hover:cursor-pointer">Link de Mercado Pago </div>
                                         </div>
                                         <div class="text-sm flex">
                                             <p class="font-bold flex-1">Estatus:</p>

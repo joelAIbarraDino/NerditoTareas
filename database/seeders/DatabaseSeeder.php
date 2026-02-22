@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         $specialistAreas = [
             'Ciencias sociales',
-            'Matematicas',
-            'Ingenieria',
+            'Matemáticas',
+            'Ingeniería',
             'Química',
             'Biología',
             'Programación',
@@ -29,9 +29,9 @@ class DatabaseSeeder extends Seeder
 
         $typesHomework = [
             'Tesis y tesinas',
-            'Invesigaciónes',
+            'Investigaciones',
             'Ensayos',
-            'Practicas y experimentos',
+            'Prácticas y experimentos',
             'Mapas mentales',
             'Exposiciones y presentaciones',
             'Programación',

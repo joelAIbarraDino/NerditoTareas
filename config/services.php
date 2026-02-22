@@ -37,6 +37,8 @@ return [
 
     'mercadopago' => [
         'token'=>env('MERCADO_PAGO_ACCESS_TOKEN'),
+        'public_key'=>env('MERCADO_PAGO_PUBLIC_KEY'),
+        'webhhok_secret'=>env('MERCADO_PAGO_WEBHOOK_SECRET'),
     ],
 
     'admin' => [

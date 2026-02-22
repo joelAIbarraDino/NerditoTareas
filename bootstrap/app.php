@@ -33,6 +33,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         });
 
+        $middleware->validateCsrfTokens(except: [
+            'mercado-pago/webhook',
+        ]);
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,

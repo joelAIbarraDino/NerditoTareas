@@ -21,5 +21,5 @@ Route::patch('homework/{homework}/change', [HomeworkController::class, 'changeSt
 Route::resource('type-homework', TypeHomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 
 
-Route::get('mercado-pago/{homework}', [MercadoPagoController::class, 'show'])->middleware(['auth', 'verified', 'role:admin' ])->name('mercado-pago.show');
+//rutas de mercado pago
 Route::post('mercado-pago/{homework}/payment-link', [MercadoPagoController::class, 'generatePaymentLink'])->middleware(['auth', 'verified', 'role:admin'])->name('mercado-pago.generatePaymentLink');
