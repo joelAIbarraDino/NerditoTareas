@@ -114,9 +114,9 @@ export interface Homework{
     private_order_id:string;
     name:string;
     description:string;
+    change_notes:string;
     admin: User;
     client: Client;
-    conversion:string;
     type_homework:TypeHomework;
     client_delivery:string;
     specialist_delivery:string;

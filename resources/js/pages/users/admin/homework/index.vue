@@ -5,10 +5,12 @@ import { AppPageProps, BreadcrumbItem, Enum, Homework, Specialist } from '@/type
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { CurrencyInput } from '@/components/currencyMoney';
-import { Pencil, Trash, Landmark } from 'lucide-vue-next';
+import { Trash, Landmark, Replace } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { computed, ref } from 'vue';
+import { Link } from 'lucide-vue-next';
 
 import ButtonNewRegister from '@/components/ButtonNewRegister.vue';
 import InputError from '@/components/InputError.vue';
@@ -16,7 +18,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import Swal from 'sweetalert2';
 
 const breadcrumbs: BreadcrumbItem[] = [{title: 'Tareas',href: '#'}]
-const columnsName = ['Tarea', 'Cliente', 'Especialista', 'Cambios', 'Status', 'Acciones'];
+const columnsName = ['# Tarea', 'Tarea', 'Cliente', 'Especialista', 'Status', 'Acciones'];
 
 interface adminPageProps extends AppPageProps{
     homework: Homework[];
@@ -72,6 +74,10 @@ const updateSpecialist = (homeworkID: number, specialistID:number|null) =>{
     });
 };
 
+const updated = ref(false);
+const updateResultError = ref(false);
+const responseMessage = ref('Cambio guardado');
+
 const updateChanges = (homeworkID:number, changeStatus:string) =>{
     router.patch(`/homework/${homeworkID}/change`, {
         changeStatus: changeStatus
@@ -79,13 +85,83 @@ const updateChanges = (homeworkID:number, changeStatus:string) =>{
     {
         preserveScroll:true,
         onSuccess: () => {
-            console.log('Status actualizado');
+            updated.value=true;
+            updateResultError.value = false;
+            setTimeout(() => {
+                updated.value = false;
+            }, 1000);
         },
         onError : () => {
-            Swal.fire('Error', 'No se pudo actualizar el status', 'error');
+            updated.value=true;
+            updateResultError.value = true;
+            responseMessage.value = "Ocurrio un error al actualizar la tarea, intente mas tarde"
+            setTimeout(() => {
+                updated.value = false;
+                updateResultError.value = false;
+                responseMessage.value = "¡Cambio guardado!"
+            }, 1000);
         }
     });
 };
+
+const updateChangeNote = (HomeworkID:number, note:string) =>{
+
+    if(!note.trim())
+        return;
+
+    router.patch(`/homework/${HomeworkID}/change_notes`, {
+        change_notes:note
+    }, 
+    {
+        preserveScroll:true,
+        onSuccess: () => {
+            updated.value=true;
+
+            setTimeout(() => {
+                updated.value = false;
+            }, 1000);
+        },
+        onError: () => {
+            updated.value=true;
+            updateResultError.value = true;
+            responseMessage.value = "Ocurrio un error al actualizar la tarea, intente mas tarde"
+            setTimeout(() => {
+                updated.value = false;
+                updateResultError.value = false;
+                responseMessage.value = "¡Cambio guardado!"
+            }, 1000);
+        }
+    })
+}
+
+const updateDriveLink = (HomeworkID:number, link:string) => {
+    if(!link.trim)
+        return;
+
+    router.patch(`/homework/${HomeworkID}/drive_link`, {
+        drive_link:link
+    }, 
+    {
+        preserveScroll:true,
+        onSuccess: () => {
+            updated.value=true;
+
+            setTimeout(() => {
+                updated.value = false;
+            }, 1000);
+        },
+        onError: () => {
+            updated.value=true;
+            updateResultError.value = true;
+            responseMessage.value = "Ocurrio un error al actualizar la tarea, intente mas tarde"
+            setTimeout(() => {
+                updated.value = false;
+                updateResultError.value = false;
+                responseMessage.value = "¡Cambio guardado!"
+            }, 1000);
+        }
+    });
+}
 
 
 const deleteHomework = async(id:number)=>{
@@ -121,6 +197,7 @@ const deleteHomework = async(id:number)=>{
 
             <TableRecords caption="Lista de tareas" :columns-head="columnsName">
                 <TableRow v-for="homework in homeworkArray":for="homework.id">
+                    <TableCell>{{ homework.order_id }}</TableCell>
                     <TableCell>{{ homework.name }}</TableCell>
                     <TableCell>{{ homework.client.user.name }}</TableCell>
                     <TableCell>
@@ -129,8 +206,9 @@ const deleteHomework = async(id:number)=>{
                             :value="homework.specialist?.id ??''" 
                             @change="(e) => updateSpecialist(homework.id, Number((e.target as HTMLSelectElement).value) == 0?null:Number((e.target as HTMLSelectElement).value))"
                         >
-                            <option value="">Sin especialista</option>
+                            <option class="dark:bg-olive-800"  value="">Sin especialista</option>
                             <option 
+                                class="dark:bg-olive-800"
                                 v-for="spec in specialists" 
                                 :key="spec.id" 
                                 :value="spec.id"
@@ -139,25 +217,92 @@ const deleteHomework = async(id:number)=>{
                             </option>
                         </select>
                     </TableCell>
-
-                    <TableCell>
-                        <select 
-                            class="p-1 border rounded bg-transparent text-sm focus:ring-2 focus:ring-blue-500"
-                            :value="homework.change" 
-                            :disabled="homework.status === 'No asignado'"
-                            @change="(e) => updateChanges(homework.id, (e.target as HTMLSelectElement).value)"
-                        >
-                            <option 
-                                v-for="changeStatus in changeStatusArray"
-                                :key="changeStatus.value" 
-                                :value="changeStatus.value"
-                            >
-                                {{ changeStatus.label }}
-                            </option>
-                        </select>
-                    </TableCell>
                     <TableCell>{{ homework.status }}</TableCell>
                     <TableActions>
+                        <Sheet>
+                            <SheetTrigger>
+                                <Button size="sm" class="bg-purple-500 hover:bg-purple-400 text-white"  >
+                                    <Replace/>
+                                </Button>
+                            </SheetTrigger>
+
+                            <SheetContent  class="
+                                overflow-y-auto 
+                                [&::-webkit-scrollbar]:w-1 
+                                [&::-webkit-scrollbar-track]:bg-gray-100 
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300 
+                                dark:[&::-webkit-scrollbar-track]:bg-neutral-700 
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+                            >
+                                <SheetHeader>
+                                    <SheetTitle class="text-2xl mb-2">Control de tareas</SheetTitle>
+                                    <SheetDescription>
+                                        <p class="text-md">Aqui controlaras los cambios solicitados por el cliente para notificar al especialista y donde se entregaran las tareas</p>
+                                    </SheetDescription>
+                                </SheetHeader>
+
+
+                                <div class="grid auto-rows-min gap-3 px-4 mb-2">
+                                    <span v-if="updated" class="text-xs px-2 py-0.5 rounded-full" :class="!updateResultError?'bg-green-100 text-green-700':'bg-red-100 text-red-700'">
+                                    {{responseMessage}}
+                                    </span>
+
+                                    <p class="text-sm font-bold border-b pb-1 mb-2">Orden de cambios</p>
+                                    
+                                    <div class="flex gap-6 flex-col md:flex-row">
+                                        <div class="flex-1 grid gap-2">
+                                            <Label for="status">Estado de cambios</Label>
+                                            <select 
+                                                id="status"
+                                                class="p-1 border rounded bg-transparent text-sm focus:ring-2 focus:ring-blue-500"
+                                                :value="homework.change" 
+                                                :disabled="homework.status === 'No asignado'"
+                                                @change="(e) => updateChanges(homework.id, (e.target as HTMLSelectElement).value)"
+                                            >
+                                                <option 
+                                                    v-for="changeStatus in changeStatusArray"
+                                                    :key="changeStatus.value" 
+                                                    :value="changeStatus.value"
+                                                >
+                                                    {{ changeStatus.label }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-6 flex-col md:flex-row">
+                                        <div class="flex-1 grid gap-1">
+                                            <Label for="drive_link">Link de drive</Label>
+                                            <div class="relative flex items-center">
+                                                <Link class="absolute left-3 text-muted-foreground select-none" />
+                                                <Input
+                                                    id="drive_link"
+                                                    @blur="(e:any) => updateDriveLink(homework.id, (e.target as HTMLSelectElement).value)" 
+                                                    type="url"
+                                                    placeholder="Link donde se subira la tarea y documentos"
+                                                    class="pl-10 pr-4"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-6 flex-col md:flex-row">
+                                        <div class="flex-1 grid gap-1">
+                                            <Label for="change_notes">Instrucciones de cambios de la tarea</Label>
+                                            <textarea 
+                                                class="border rounded h-30 p-2 focus:border-primary" 
+                                                @blur="(e) => updateChangeNote(homework.id, (e.target as HTMLSelectElement).value)" 
+                                            >{{ homework.change_notes }}</textarea>
+                                                
+                                            
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </SheetContent>
+
+                        </Sheet>
+
                         <Sheet>
                             <SheetTrigger>
                                 <Button size="sm" class="bg-amber-300 hover:bg-amber-500 text-white"  >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue} from '@/components/ui/select';
 import { RecordForm, RecordFormBody, RecordFormHeader, RecordFormSubmit } from '@/components/recordForm';
 import { AppPageProps, BreadcrumbItem, Client, Enum, Specialist, TypeHomework } from '@/types';
 import { CurrencyInput } from '@/components/currencyMoney';
@@ -8,6 +8,7 @@ import { SimpleEditor } from '@/components/textEditor';
 import { LoadingOverlay } from '@/components/overlay';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Link } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 import InputError from '@/components/InputError.vue';
@@ -35,7 +36,6 @@ const form = useForm({
     name:'',
     description:'',
     client:'',
-    conversion:'',
     type_homework:'',
     client_delivery:'',
     specialist_delivery:'',
@@ -63,7 +63,42 @@ function submit(){
         <RecordFormHeader title-form="Nueva tarea" return-url="/homework"/>
         <RecordFormBody  :handle="submit">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-2 md:space-y-0">
+            <div class="flex gap-6 flex-col md:flex-row">
+                <div class="flex-1 grid gap-1">
+                    <Label for="name">Tarea</Label>
+                    <Input
+                        id="name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.name"
+                        placeholder="Nombre de la tarea"
+                    />
+                    <InputError class="mt-1" :message="form.errors.name" />
+                </div>
+            </div>
+
+            <div class="flex gap-6 flex-col md:flex-row">
+                <div class="flex-1 grid gap-2">
+                    <Label for="area">Tipo de tarea</Label>
+
+                    <Select v-model="form.type_homework" class="w-full" id="area">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Seleccione el tipo de tarea"/>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Tipo de tareas</SelectLabel>
+                                <SelectItem v-for="typeHomework in typesHomework":key="typeHomework.id" :value="typeHomework.id">{{ typeHomework.name }}</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+
+                    </Select>
+                    <InputError class="mt-1" :message="form.errors.type_homework" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-2 md:space-y-0">   
                 <div class="flex gap-6 flex-col md:flex-row">
                     <div class="flex-1 grid gap-1">
                         <Label for="area">Cliente</Label>
@@ -86,76 +121,6 @@ function submit(){
                 </div>
 
                 <div class="flex gap-6 flex-col md:flex-row">
-                    <div class="flex-1 grid gap-1">
-                        <Label for="area">¿Como se entero el cliente de Nerdito?</Label>
-
-                        <Select v-model="form.conversion" class="w-full" id="area">
-                            <SelectTrigger class="w-full">
-                                <SelectValue placeholder="Seleccione la conversión"/>
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Conversión</SelectLabel>
-                                    <SelectItem v-for="conversion in conversions":key="conversion.value" :value="conversion.value">{{ conversion.label }}</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-
-                        </Select>
-                        <InputError class="mt-1" :message="form.errors.conversion" />
-                    </div>
-                </div>
-
-
-            </div>
-
-            <div class="flex gap-6 flex-col md:flex-row">
-                <div class="flex-1 grid gap-1">
-                        <Label for="name">Tarea</Label>
-                        <Input
-                            id="name"
-                            type="text"
-                            class="mt-1 block w-full"
-                            v-model="form.name"
-                            placeholder="Nombre del administrador"
-                        />
-                        <InputError class="mt-1" :message="form.errors.name" />
-                    </div>
-                </div>
-            
-            <div class="flex gap-6 flex-col md:flex-row">
-                <div class="flex-1 grid gap-1">
-                    <Label for="description">Descripción o instrucciones de la tarea</Label>
-                    <SimpleEditor 
-                        v-model="form.description" 
-                        id="description"
-                    />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex gap-6 flex-col md:flex-row">
-                    <div class="flex-1 grid gap-2">
-                        <Label for="area">Tipo de tarea</Label>
-
-                        <Select v-model="form.type_homework" class="w-full" id="area">
-                            <SelectTrigger class="w-full">
-                                <SelectValue placeholder="Seleccione el tipo de tarea"/>
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Tipo de tareas</SelectLabel>
-                                    <SelectItem v-for="typeHomework in typesHomework":key="typeHomework.id" :value="typeHomework.id">{{ typeHomework.name }}</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-
-                        </Select>
-                        <InputError class="mt-1" :message="form.errors.type_homework" />
-                    </div>
-                </div>
-
-                <div class="flex gap-6 flex-col md:flex-row">
                     <div class="flex-1 grid gap-2">
                         <Label for="area">Especialista (opcional)</Label>
 
@@ -174,6 +139,34 @@ function submit(){
                         </Select>
                         <InputError class="mt-1" :message="form.errors.specialist" />
                     </div>
+                </div>
+            </div>
+
+            <div class="flex gap-6 flex-col md:flex-row">
+                <div class="flex-1 grid gap-1">
+                    <Label for="drive_link">Link de drive</Label>
+
+                    <div class="relative flex items-center">
+                        <Link class="absolute left-3 text-muted-foreground select-none" />
+                        <Input
+                            v-model="form.drive_link"
+                            id="drive_link"
+                            type="url"
+                            placeholder="Link donde se subira la tarea y documentos"
+                            class="pl-10 pr-4"
+                        />
+                    </div>
+                    <InputError class="mt-1" :message="form.errors.drive_link" />
+                </div>
+            </div>
+            
+            <div class="flex gap-6 flex-col md:flex-row">
+                <div class="flex-1 grid gap-1">
+                    <Label for="description">Descripción o instrucciones de la tarea</Label>
+                    <SimpleEditor 
+                        v-model="form.description" 
+                        id="description"
+                    />
                 </div>
             </div>
 

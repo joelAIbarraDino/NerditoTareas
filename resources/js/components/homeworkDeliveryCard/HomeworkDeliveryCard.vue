@@ -56,27 +56,8 @@ const formatHour = (date:string) => {
             <p class="font-bold">{{ formatHour(homework.specialist_delivery) }} </p>
         </div>
 
-        <!-- <div>
-            <p class="font-black text-primary text-md my-2 border-b-2">Documentos para trabajar</p>
-
-            <div class="flex flex-col h-32 overflow-auto px-2
-                [&::-webkit-scrollbar]:w-1 
-                [&::-webkit-scrollbar-track]:bg-gray-100 
-                [&::-webkit-scrollbar-thumb]:bg-gray-300 
-                dark:[&::-webkit-scrollbar-track]:bg-neutral-700 
-                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-            ">
-                <div class="flex items-center justify-between p-2 even:bg-primary odd:bg-primary/80 text-white" v-for="i in 10">
-                    <p>Nombre de documento</p>
-                    <Button as-child size="lg">
-                        <a href="https://lucide.dev/icons/handshake" target="_blank"><File /></a>
-                    </Button>
-                </div>
-            </div>
-        </div> -->
-
         <Button as-child size="lg" class="w-full mt-4" v-if=" homework.status =='Completado' && pedingPage <= 0">
-            <a :href="`/client/${homework.order_id}/delivery`">Ver entrega   <Package /> </a>
+            <a :href="homework.drive_link" target="_blank">Ver entrega   <Package /> </a>
         </Button>
 
         <Button as-child size="lg" class="w-full mt-4 bg-amber-300 hover:bg-amber-300/80 transition text-black" v-else-if="pedingPage > 0">

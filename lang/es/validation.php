@@ -293,5 +293,6 @@ return [
         'specialist_delivery'      => 'entrega del especialista',
         'specialist_payment'       => 'pago al especialista',
         'final_price'              => 'precio final',
+        'drive_link'              => 'link de drive',
     ],
 ];

@@ -51,7 +51,7 @@ class HomeworkController extends Controller
             'name'=>'required|string',
             'description'=>'required|string',
             'client'=>'required|integer|exists:clients,id',
-            'conversion'=>['required', new Enum(ConversionOrigin::class)],
+            'drive_link'=>'required|url',
             'specialist'=>'nullable|integer|exists:specialists,id',
             'type_homework'=>'required|integer|exists:type_homework,id',
             'client_delivery'=>'required|string',
@@ -66,7 +66,6 @@ class HomeworkController extends Controller
         $homework->name = $request->name;
         $homework->description = $request->description;
         $homework->client = $request->client;
-        $homework->conversion = $request->conversion;
         $homework->type_homework = $request->type_homework;
         $homework->client_delivery = $request->client_delivery;
         $homework->specialist_delivery = $request->specialist_delivery;
@@ -75,16 +74,12 @@ class HomeworkController extends Controller
         $homework->specialist_payment = $request->specialist_payment;
         $homework->amount_paid = 0;
         $homework->proft = $request->final_price - $request->specialist_payment;
-
+        $homework->order_id = $this->generarCodigoControl();
 
         $homework->status = $request->filled('specialist') ? HomeworkStatus::Assigned : HomeworkStatus::Unassigned;
         $homework->change = HomeworkChange::NoChange;
-        $homework->order_id = $this->generarCodigoControl();
         $homework->admin = Auth::id();
 
-        $homework->save();
-
-        $homework->private_order_id = $this->generarCodigoControlInterno($homework->id);
         $homework->save();
 
         return redirect()->route('homework.index');
@@ -113,6 +108,12 @@ class HomeworkController extends Controller
     {
         if($homework->payments()->count() > 0)
             return redirect()->route('homework.index')->with('message', 'Esta tarea tiene un pago registrado, no se puede eliminar');
+
+        if($homework->orderPayments()->count() > 0)
+            return redirect()->route('homework.index')->with('message', 'Esta tarea tiene una orden de pago registrado, no se puede eliminar');
+
+        if($homework->paymentSpecialists()->count() > 0)
+            return redirect()->route('homework.index')->with('message', 'Esta tarea tiene un pado a especialista registrado, no se puede eliminar');
 
         if($homework->status === HomeworkStatus::Assigned)
             return redirect()->route('homework.index')->with('message', 'Esta tarea esta asignado a un especialista, no se puede eliminar');
@@ -167,23 +168,60 @@ class HomeworkController extends Controller
         return back()->with('message', 'Status cambiado correctamente');
     }
 
-    public function generarCodigoControl()
-    {
-        $prefijo = 'NTC-';
+    public function changeFinalStatus(Homework $homework){
         
-        // Generamos 10 dígitos aleatorios
-        $numeros = '';
-        for ($i = 0; $i < 10; $i++) {
-            $numeros .= random_int(0, 9);
-        }
+        $homework->update([
+            'change' => HomeworkChange::ChangeReady,
+            'status' => HomeworkStatus::Completed,
+        ]);
 
-        return $prefijo . $numeros;
+        return back()->with('message', 'Status cambiado correctamente');
     }
 
-    public function generarCodigoControlInterno($id)
+    public function changeNotes(Request $request, Homework $homework){     
+        $request->validate([
+            'change_notes'=>'required|string',
+        ]);
+
+        $homework->update([
+            'change_notes'=>$request->change_notes,
+        ]);
+
+        return back()->with('message', 'Notas de cambio actualizado correctamente');
+    }
+
+    public function changeDriveLink(Request $request, Homework $homework){     
+        $request->validate([
+            'drive_link'=>'required|url',
+        ]);
+
+        $homework->update([
+            'drive_link'=>$request->drive_link,
+        ]);
+
+        return back()->with('message', 'Link de drive actualizado correctamente');
+    }
+
+    public function generarCodigoControl()
     {
-        $prefijo = 'NT-';
+        $code = "";
+        $prefijo = 'NTC-';
         
-        return $prefijo . str_pad($id, 5, '0', STR_PAD_LEFT);
+        $numeros = '';
+
+        for ($i = 0; $i < 10; $i++)
+            $numeros .= random_int(0, 9);
+        
+        $code =  $prefijo . $numeros;
+
+        while(Homework::where('order_id', $code)->exit()){
+            $numeros = '';
+            for ($i = 0; $i < 10; $i++)
+                $numeros .= random_int(0, 9);
+
+            $code =  $prefijo . $numeros;
+        }
+
+        return $code;
     }
 }
