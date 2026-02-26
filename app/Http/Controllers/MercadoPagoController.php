@@ -91,19 +91,36 @@ class MercadoPagoController extends Controller
                 "external_reference" => (string)$homework->order_id,
             ]);
 
-            if($payment->status === 'approved'){
+
+            $status = match($payment->status) {
+                'approved' => PaymentStatus::Approved,
+                'reject' => PaymentStatus::Reject,
+                default => PaymentStatus::Pending
+            };
+
+            
+            $status = match($payment->status) {
+                'approved' => PaymentStatus::Approved,
+                'reject' => PaymentStatus::Reject,
+                default => PaymentStatus::Pending
+            };
+
+            $methodPayment = PaymentMethod::tryFrom($payment->payment_type_id) ?? PaymentMethod::AccountMoney;
+
+            DB::transaction(function () use ($homework, $payment, $status, $methodPayment){
                 Payment::create([
-                    'order_id'=>$homework->id,
-                    'amount'=> (float)$request->transaction_amount,
-                    'payment_id'=>$payment->id,
-                    'method'=> PaymentMethod::DebitCard,
-                    'status'=>PaymentStatus::Approved,
+                    'order_id' => $homework->id,
+                    'amount' => $payment->transaction_amount,
+                    'payment_id' => $payment->id,
+                    'status' => $status,
+                    'method' => $methodPayment
                 ]);
 
-                return redirect()->route('client.index')->with('message', 'Pago aceptado :');
-            }
+                if($status === PaymentStatus::Approved)
+                    $homework->increment('amount_paid', $payment->transaction_amount);
+            });
 
-            return back()->withErrors(['pago' => 'El pago fue ' . $payment->status]);
+            return redirect()->route('client.index');
 
 
         }catch(MPApiException $e){

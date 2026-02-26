@@ -79,7 +79,10 @@ export interface paymentSpecialist{
     id_homework:number;
     amount:number;
     type:string;
-
+    homework:Homework;
+    specialist:Specialist;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Specialist {

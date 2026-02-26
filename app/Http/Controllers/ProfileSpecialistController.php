@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Homework;
+use App\Models\PaymentSpecialist;
 use App\Models\Specialist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,13 @@ class ProfileSpecialistController extends Controller
         $specialist = Specialist::where('id_user', Auth::id())->get()->first();
         return Inertia::render('users/specialist/Profile', [
             'homework' => Homework::with('typeHomework')->where('specialist', $specialist->id)->get(),
+        ]);
+    }
+
+    public function payments(){
+        $specialist = Specialist::where('id_user', Auth::id())->get()->first();
+        return Inertia::render('users/specialist/Payments', [
+            'payments' => PaymentSpecialist::with('homework')->where('id_specialist', $specialist->id)->get(),
         ]);
     }
 }
