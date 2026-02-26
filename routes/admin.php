@@ -21,6 +21,7 @@ Route::patch('homework/{homework}/change', [HomeworkController::class, 'changeSt
 Route::patch('homework/{homework}/status', [HomeworkController::class, 'changeFinalStatus'])->middleware(['auth', 'verified', 'role:specialist']);
 Route::patch('homework/{homework}/change_notes', [HomeworkController::class, 'changeNotes'])->middleware(['auth', 'verified', 'role:admin']);
 Route::patch('homework/{homework}/drive_link', [HomeworkController::class, 'changeDriveLink'])->middleware(['auth', 'verified', 'role:admin']);
+Route::post('homework/{homework}/payment-specialist', [HomeworkController::class, 'paymentSpecialist'])->middleware(['auth', 'verified', 'role:admin']);
 Route::resource('type-homework', TypeHomeworkController::class)->middleware(['auth', 'verified', 'role:admin']);
 
 

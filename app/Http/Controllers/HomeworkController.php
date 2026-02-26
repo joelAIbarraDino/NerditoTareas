@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\ConversionOrigin;
 use App\Enums\HomeworkChange;
 use App\Enums\HomeworkStatus;
+use App\Enums\PaymentSpecialistType;
 use App\Models\Client;
 use App\Models\Homework;
+use App\Models\PaymentSpecialist;
 use App\Models\Specialist;
 use App\Models\TypeHomework;
 use Illuminate\Http\Request;
@@ -23,7 +25,7 @@ class HomeworkController extends Controller
     public function index()
     {
         return Inertia::render('users/admin/homework/index', [
-            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework', 'payments', 'orderPayments'])->get(),
+            'homework'=>Homework::with(['admin', 'client.user', 'specialist.user', 'typeHomework', 'payments', 'orderPayments', 'paymentSpecialists'])->get(),
             'specialists'=>Specialist::with('user')->get(),
             'changeStatus'=>HomeworkChange::options(),
         ]);
@@ -145,9 +147,31 @@ class HomeworkController extends Controller
         return back()->with('message', 'Tarea asignada correctamente');
     }
 
+    public function paymentSpecialist(Request $request, Homework $homework){
+        
+        $request->validate([
+            'amount'=>['required', 'numeric', 'min:10', 'max:'.$homework->specialist_payment],
+            'id_specialist' => 'nullable|integer|exists:specialists,id',
+            'penality' => 'required'
+        ]);
+
+        $type =$request->penality?PaymentSpecialistType::Penality:PaymentSpecialistType::Payment;
+
+        PaymentSpecialist::create([
+            'id_homework' => $homework->id,
+            'id_specialist' => $request->id_specialist,
+            'amount' => $request->amount,
+            'type' => $type,
+        ]);
+
+        return back()->with('message', 'Pago registrado correctamente');
+
+    }
+
     public function changeStatus(Request $request, Homework $homework){
         $request->validate([
             'changeStatus'=>['required', new Enum(HomeworkChange::class)],
+            'id_specialist'
         ]);
 
         $changeStatus = HomeworkChange::from($request->changeStatus);

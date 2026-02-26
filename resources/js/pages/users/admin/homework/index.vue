@@ -38,11 +38,18 @@ const paymentForm = useForm({
     amount:null,
 });
 
+const paymentSpecialistForm = useForm({
+    amount:null,
+    penality:false,
+    id_specialist:0
+});
+
+
 const generateLink = (homeworkID:number) =>{
     paymentForm.post(`/mercado-pago/${homeworkID}/payment-link`,{
-    preserveScroll:true,
-    onSuccess: () => paymentForm.reset()
-  })
+        preserveScroll:true,
+        onSuccess: () => paymentForm.reset()
+    })
 }
 
 const copied = ref(false);
@@ -57,6 +64,14 @@ const copyLink = async (url:string) => {
     }catch(err){
         console.error("No se pudo copiar el link de mercado pago", err);
     }
+}
+
+const savePayment = (homeworkID:number, specialistID:number) => {
+    paymentSpecialistForm.id_specialist = specialistID;
+    paymentSpecialistForm.post(`/homework/${homeworkID}/payment-specialist`, {
+        preserveScroll:true,
+        onSuccess: () => paymentSpecialistForm.reset()
+    });
 }
 
 const updateSpecialist = (homeworkID: number, specialistID:number|null) =>{
@@ -281,6 +296,7 @@ const deleteHomework = async(id:number)=>{
                                                     type="url"
                                                     placeholder="Link donde se subira la tarea y documentos"
                                                     class="pl-10 pr-4"
+                                                    :model-value="homework.drive_link"
                                                 />
                                             </div>
                                         </div>
@@ -316,7 +332,7 @@ const deleteHomework = async(id:number)=>{
                                 [&::-webkit-scrollbar-track]:bg-gray-100 
                                 [&::-webkit-scrollbar-thumb]:bg-gray-300 
                                 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 pb-10"
                             >
                                 <SheetHeader>
                                     <SheetTitle class="text-2xl mb-2">Centro de pagos</SheetTitle>
@@ -406,8 +422,60 @@ const deleteHomework = async(id:number)=>{
                                         <p class="text-center text-sm font-bold mt-2 text-orange-400">No hay pagos registrados</p>
                                     </div>
                                 </div>
-                            </SheetContent>
 
+                                <form class="grid auto-rows-min gap-3 px-4 my-4" @submit.prevent="savePayment(homework.id, homework.specialist.id)">
+                                    <p class="text-sm font-bold border-b pb-1 mb-2">Registrar pago a especialista</p>
+
+                                    <div class="grid gap-2">
+                                        <Label for="amount">Monto de pago</Label>
+                                        <CurrencyInput
+                                            id="amount"
+                                            placeholder="Monto a pagar"
+                                            v-model="paymentSpecialistForm.amount"
+                                        />
+                                        <InputError class="mt-1" :message="paymentSpecialistForm.errors.amount" />
+                                    </div>
+                                    
+                                    <div class="flex items-center">
+                                        <input
+                                            id="penality"
+                                            v-model="paymentSpecialistForm.penality"
+                                            type="checkbox"
+                                            class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                        />
+                                        <label for="penality" class="ml-2 block text-sm text-red-500 cursor-pointer font-black">
+                                            ¿Es una penalización?
+                                        </label>
+                                    </div>
+                            
+                                    <input
+                                        v-model="paymentSpecialistForm.id_specialist"
+                                        type="hidden"
+                                        value="homework.specialist.id"
+                                    />
+
+                                    <Button type="submit" class="bg-lime-600">Registrar pago</Button>
+                                </form>
+
+
+                                <div class="mx-4">
+                                    <p class="text-sm font-bold border-b pb-1 mb-5">Pagos a especialistas</p>
+
+                                    <div v-if="homework.payment_specialists.length > 0" class="p-2 rounded my-3 mx-2 border-primary" :class="payment.type === 'Penalización'?'bg-red-400/50':'bg-primary/10'" v-for="payment in homework.payment_specialists":key="payment.id">
+                                        <div class="text-sm flex">
+                                            <p class="font-bold flex-1">Monto:</p>
+                                            <p class="flex-1 text-lime-700 font-bold">${{ payment.amount }}</p>
+                                        </div>
+                                        <div class="text-sm flex">
+                                            <p class="font-bold flex-1">Tipo de pago:</p>
+                                            <p class="flex-1 font-bold">{{ payment.type }}</p>
+                                        </div>
+                                    </div>
+                                    <div v-else>
+                                        <p class="text-center text-sm font-bold mt-2 text-orange-400">No hay pagos o penalizaciones registradass</p>
+                                    </div>
+                                </div>
+                            </SheetContent>
                         </Sheet>
                         
                         <TableRecordButton

@@ -73,6 +73,15 @@ export interface OrderPayment{
     status:string;
 }
 
+export interface paymentSpecialist{
+    id:number;
+    id_specialist:number;
+    id_homework:number;
+    amount:number;
+    type:string;
+
+}
+
 export interface Specialist {
     id:number;
     id_user:number;
@@ -130,6 +139,7 @@ export interface Homework{
     amount_paid:number;
     payments:Payment[];
     order_payments:OrderPayment[];
+    payment_specialists: paymentSpecialist[];
     created_at: string;
     updated_at: string;
 }
