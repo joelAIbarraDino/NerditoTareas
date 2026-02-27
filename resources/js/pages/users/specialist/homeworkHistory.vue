@@ -6,7 +6,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { PartyPopper } from 'lucide-vue-next';
+import { FileSearch } from 'lucide-vue-next';
 import { HomeworkCard } from '@/components/homeworkCard';
 
 interface specialistPageProps extends AppPageProps{
@@ -20,21 +20,21 @@ const breadcrumbs: BreadcrumbItem[] = [{title: 'Mis tareas',href: '#'}]
 </script>
 
 <template>
-    <Head title="Mi tareas asignadas"/>
+    <Head title="Tareas realizadas"/>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4 space-y-2">
-            <p class="text-2xl font-bold text-primary mb-4">Mis tareas asignadas</p>
+            <p class="text-2xl font-bold text-primary mb-4">Historial de tareas</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" v-if="homeworkArray.length > 0">    
-                <HomeworkCard v-for="homework in homeworkArray":for="homework.id" :homework="homework" :editable="true"/>
+                <HomeworkCard v-for="homework in homeworkArray":for="homework.id" :homework="homework" :editable="false"/>
             </div>
 
             <Empty v-else>
                 <EmptyHeader>
                     <EmptyMedia variant="icon">
-                        <PartyPopper />
+                        <FileSearch />
                     </EmptyMedia>
-                    <EmptyTitle>No hay tareas asignadas</EmptyTitle>
+                    <EmptyTitle>No hay historial de tareass</EmptyTitle>
 
                     <EmptyDescription>
                         Espera a que un administrador te asigne una tarea

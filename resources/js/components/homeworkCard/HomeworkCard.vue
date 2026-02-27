@@ -8,6 +8,7 @@ import { ref } from 'vue';
 
 interface homeworkProps {
     homework: Homework;
+    editable:boolean;
 }
 
 defineProps<homeworkProps>();
@@ -91,7 +92,7 @@ const deliveryChange = (homeworkID:number) => {
 
                 <div class="flex text-md items-center justify-between">
                     <p class="font-bold">Estatus:</p>
-                    <p class="font-bold">{{ homework.status }}</p>
+                    <p class="font-bold" :class="(homework.status == 'Completado'?'text-lime-600':'text-amber-600')">{{ homework.status }}</p>
                 </div>
             </div>  
         </SheetTrigger>
@@ -114,13 +115,13 @@ const deliveryChange = (homeworkID:number) => {
         
         <div class="px-4">
 
-            <Button @click="deliveryChange(homework.id)" class="bg-primary text-white hover:bg-primary/85 w-full mb-4" :disabled="homework.status === 'Completado'">
+            <Button v-if="editable" @click="deliveryChange(homework.id)" class="bg-primary text-white hover:bg-primary/85 w-full mb-4" :disabled="homework.status === 'Completado'">
                 <p>{{ homework.status === 'Completado'? 'Tarea completada':'Marcar tarea como lista' }}</p>
             </Button>
             <span v-if="updated" class="text-xs px-2 py-0.5 rounded-full" :class="!updateResultError?'bg-green-100 text-green-700':'bg-red-100 text-red-700'">
                 {{responseMessage}}
             </span>
-            <div class="mb-3 text-white font-bold w-full bg-primary p-2 rounded border-black ">
+            <div v-if="editable" class="mb-3 text-white font-bold w-full bg-primary p-2 rounded border-black ">
                 <a v-if="homework.drive_link" :href="homework.drive_link" class="hover:underline hover:cursor-pointer" target="_blank">Ir a carpeta</a>
                 <p v-else target="_blank">No hay un link de drive todavia</p>
             </div>

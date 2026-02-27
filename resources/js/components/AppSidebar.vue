@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList, NotebookPen, Banknote } from 'lucide-vue-next';
+import { LayoutGrid, User, Glasses, NotebookTabs, Handshake, BookA, LayoutList, NotebookPen, Banknote, CalendarArrowDown } from 'lucide-vue-next';
 
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -88,8 +88,14 @@ const specialistNavItems: NavItem[] = [
     },
 
     {
+        title: 'Tareas pasadas',
+        href: '/specialist/homework-history',
+        icon: CalendarArrowDown,
+    },
+
+    {
         title: 'Pagos',
-        href: '/specialist-payments',
+        href: '/specialist/payments',
         icon: Banknote,
     },
 ]

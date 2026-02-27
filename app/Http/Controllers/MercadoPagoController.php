@@ -67,15 +67,12 @@ class MercadoPagoController extends Controller
         }
     }
 
-    public function payment(Request $request, Homework $homework)
+    public function processPayment(Request $request, Homework $homework)
     {
-        $request->validate([
-            'token' => 'required|string',
-            'payment_method_id' => 'required|string',
-            'transaction_amount' => 'required|numeric',
-            'payer.email' => 'required|email',
-        ]);
 
+        MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
+        MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
+        
         $client = new PaymentClient;
 
         try{
@@ -91,23 +88,19 @@ class MercadoPagoController extends Controller
                 "external_reference" => (string)$homework->order_id,
             ]);
 
+            dd($payment);
 
             $status = match($payment->status) {
                 'approved' => PaymentStatus::Approved,
-                'reject' => PaymentStatus::Reject,
+                'rejected' => PaymentStatus::Reject,
                 default => PaymentStatus::Pending
             };
 
-            
-            $status = match($payment->status) {
-                'approved' => PaymentStatus::Approved,
-                'reject' => PaymentStatus::Reject,
-                default => PaymentStatus::Pending
-            };
-
+    
             $methodPayment = PaymentMethod::tryFrom($payment->payment_type_id) ?? PaymentMethod::AccountMoney;
 
             DB::transaction(function () use ($homework, $payment, $status, $methodPayment){
+
                 Payment::create([
                     'order_id' => $homework->id,
                     'amount' => $payment->transaction_amount,
@@ -120,8 +113,7 @@ class MercadoPagoController extends Controller
                     $homework->increment('amount_paid', $payment->transaction_amount);
             });
 
-            return redirect()->route('client.index');
-
+            return back()->with('message', 'Pago procesado correctamente');
 
         }catch(MPApiException $e){
             return back()->withErrors([
@@ -161,12 +153,13 @@ class MercadoPagoController extends Controller
 
             $status = match($mpPayment->status) {
                 'approved' => PaymentStatus::Approved,
-                'reject' => PaymentStatus::Reject,
+                'rejected' => PaymentStatus::Reject,
                 default => PaymentStatus::Pending
             };
 
             $methodPayment = PaymentMethod::tryFrom($mpPayment->payment_type_id) ?? PaymentMethod::AccountMoney;
 
+        
             DB::transaction(function () use ($homework, $orderPayment, $mpPayment, $status, $methodPayment){
                 Payment::create([
                     'order_id' => $homework->id,
