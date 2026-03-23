@@ -238,7 +238,7 @@ class HomeworkController extends Controller
         
         $code =  $prefijo . $numeros;
 
-        while(Homework::where('order_id', $code)->exit()){
+        while(Homework::where('order_id', $code)->exists()){
             $numeros = '';
             for ($i = 0; $i < 10; $i++)
                 $numeros .= random_int(0, 9);

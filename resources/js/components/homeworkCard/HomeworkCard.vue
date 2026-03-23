@@ -138,19 +138,21 @@ const deliveryChange = (homeworkID:number) => {
                 " 
                 v-html="homework.description" 
             />
+            <template v-if="homework.change_notes">
+                <p class=" my-2 font-bold text-md">Cambios en la tarea:</p>            
+                <div 
+                    ref="homeworkContainer"
+                    class="border-2 w-full h-40 p-2 rounded overflow-y-auto
+                        [&::-webkit-scrollbar]:w-1 
+                        [&::-webkit-scrollbar-track]:bg-gray-100 
+                        [&::-webkit-scrollbar-thumb]:bg-gray-300 
+                        dark:[&::-webkit-scrollbar-track]:bg-neutral-700 
+                        dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                    " 
+                    v-html="homework.change_notes" 
+                />
+            </template>
 
-            <p class=" my-2 font-bold text-md">Cambios en la tarea:</p>            
-            <div 
-                ref="homeworkContainer"
-                class="border-2 w-full h-40 p-2 rounded overflow-y-auto
-                    [&::-webkit-scrollbar]:w-1 
-                    [&::-webkit-scrollbar-track]:bg-gray-100 
-                    [&::-webkit-scrollbar-thumb]:bg-gray-300 
-                    dark:[&::-webkit-scrollbar-track]:bg-neutral-700 
-                    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                " 
-                v-html="homework.change_notes" 
-            />
         </div>
 
         <SheetFooter>

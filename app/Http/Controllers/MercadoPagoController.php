@@ -88,7 +88,6 @@ class MercadoPagoController extends Controller
                 "external_reference" => (string)$homework->order_id,
             ]);
 
-            dd($payment);
 
             $status = match($payment->status) {
                 'approved' => PaymentStatus::Approved,

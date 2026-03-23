@@ -106,12 +106,6 @@ const clientNavItems: NavItem[] = [
         href: '/client',
         icon: NotebookPen,
     },
-
-    // {
-    //     title: 'Pedir tareas',
-    //     href: '/client/request',
-    //     icon: Handshake,
-    // },
 ]
 
 const emptyNavItems: NavItem[] = []
